@@ -1,0 +1,10 @@
+# Site settings
+title: PlayN
+tag_text: PlayN
+description: PlayN is a cross-platform game development library for Java.
+
+# Build settings
+markdown: kramdown
+pygments: true
+
+exclude: ["README.md"]
