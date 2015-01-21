@@ -26,8 +26,8 @@ PlayN is free and open source, released under the Apache 2.0 license.
 ## Getting Started
 
 * Read an [overview](docs/overview.html) of the PlayN functionality
-* Build and run the [PlayN demos](docs/#demos)
-* Work through the [PlayN Reversi tutorial](docs/#tutorial)
+* Build and run the [demos](docs/#demos)
+* Work through the [Reversi tutorial](docs/tutorial.html)
 * See all the [documentation](docs)
 
 ## Community
@@ -47,5 +47,3 @@ PlayN is free and open source, released under the Apache 2.0 license.
 [QuadBatch]: docs/overview.html#quadbatch
 [Surface]: docs/overview.html#surface
 [TriplePlay]: https://github.com/threerings/tripleplay
-[source code]: 
-[release notes]: https://code.google.com/p/playn/wiki/ReleaseNotes

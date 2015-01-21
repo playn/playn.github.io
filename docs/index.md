@@ -20,14 +20,14 @@ Read the [overview](overview.html) of the PlayN library, or jump right to a part
 
 ## Tutorial
 
-This tutorial describes the process of building a simple Reversi game from scratch with PlayN. It
-will assume you've read the overview documentation above to understand the basic components of
-PlayN and what they do.
+This [tutorial](tutorial.html) describes the process of building a simple Reversi game from scratch
+with PlayN. It will assume you've read the overview documentation above to understand the basic
+components of PlayN and what they do.
 
-* [Development environment](tutorial/environment.html)
-* [Draw the board](tutorial/drawing.html)
-* [Handle player input](tutorial/input.html)
-* [Make some noise](tutorial/audio.html)
+* [Development environment](tutorial.html#environment)
+* [Draw the board](tutorial.html#drawing)
+* [Handle player input](tutorial.html#input)
+* [Make some noise](tutorial.html#audio)
 
 ## API
 
