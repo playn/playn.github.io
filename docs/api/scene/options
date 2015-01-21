@@ -1,0 +1,44 @@
+-classpath
+'/Users/mdb/projects/playn/scene/target/classes:/Users/mdb/.m2/repository/com/threerings/react/1.5.1/react-1.5.1.jar:/Users/mdb/.m2/repository/com/samskivert/pythagoras/1.4.1/pythagoras-1.4.1.jar:/Users/mdb/.m2/repository/com/googlecode/playn/playn-core/2.0-SNAPSHOT/playn-core-2.0-SNAPSHOT.jar'
+-encoding
+'UTF-8'
+-public
+-quiet
+-sourcepath
+'/Users/mdb/projects/playn/scene/src'
+-Xdoclint:all -Xdoclint:-missing
+-author
+-bottom
+'Copyright &#169; 2015. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/mdb/projects/playn/scene/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'PlayN Scene 2.0-SNAPSHOT API'
+-linkoffline
+'http://code.google.com/p/playn/playn-core/apidocs' '/Users/mdb/projects/playn/core/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-android/apidocs' '/Users/mdb/projects/playn/android/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-webgl/apidocs' '/Users/mdb/projects/playn/webgl/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-html/apidocs' '/Users/mdb/projects/playn/html/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-java/apidocs' '/Users/mdb/projects/playn/java/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-jbox2d/apidocs' '/Users/mdb/projects/playn/jbox2d/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-robovm/apidocs' '/Users/mdb/projects/playn/robovm/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-swt-java/apidocs' '/Users/mdb/projects/playn/swt-java/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-tests/playn-tests-core/apidocs' '/Users/mdb/projects/playn/tests/core/target/site/apidocs'
+-linkoffline
+'http://code.google.com/p/playn/playn-tests/playn-tests-java/apidocs' '/Users/mdb/projects/playn/tests/java/target/site/apidocs'
+-use
+-version
+-windowtitle
+'PlayN Scene 2.0-SNAPSHOT API'
