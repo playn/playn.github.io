@@ -3,7 +3,27 @@ title: PlayN
 description: PlayN is a cross-platform game development library for Java.
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet
 highlighter: pygments
 
 exclude: ["README.md"]
+
+defaults:
+ -
+   scope:
+     path: ""
+     type: "pages"
+   values:
+     nav: "nav"
+ -
+   scope:
+     path: "docs"
+     type: "pages"
+   values:
+     nav: "docs-nav"
+ -
+   scope:
+     path: "cookbook"
+     type: "pages"
+   values:
+     nav: "cookbook-nav"

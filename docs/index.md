@@ -25,7 +25,8 @@ This [tutorial](tutorial.html) describes the process of building a simple Revers
 with PlayN. It will assume you've read the overview documentation above to understand the basic
 components of PlayN and what they do.
 
-* [Development environment](tutorial.html#environment)
+* [Development environment](setup.html)
+* [Create a skeleton game](tutorial.html#skeleton)
 * [Draw the board](tutorial.html#drawing)
 * [Handle player input](tutorial.html#input)
 * [Make some noise](tutorial.html#audio)
@@ -39,8 +40,8 @@ components of PlayN and what they do.
 ## Demos
 
 We have a few simple demos of PlayN functionality. You can download and build them to ensure that
-you have your development environment set up properly, and they show how to do some useful things
-with the library.
+you have your [development environment](setup.html) set up properly, and they show how to do some
+useful things with the library.
 
 * [Hello] - the PlayN equivalent of Hello World
 * [Cute] - draws an environment and a character walking around therein
