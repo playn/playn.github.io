@@ -13,6 +13,7 @@ and run some demos or jump right into a tutorial and build something with it.
 Read the [overview](overview.html) of the PlayN library, or jump right to a particular section:
 
 * [Graphics](overview.html#graphics)
+* [Game loop](overview.html#game-loop)
 * [Audio](overview.html#audio)
 * [Assets](overview.html.html#assets)
 * [Network](overview.html#network)
