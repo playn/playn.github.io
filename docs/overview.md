@@ -1,4 +1,4 @@
----
+  ---
 layout: docs
 ---
 
@@ -12,6 +12,7 @@ Overview of the overview:
 
 * [Graphics](#graphics)
 * [Game loop](#game-loop)
+* [Scene graph](#scene-graph)
 * [Audio](#audio)
 * [Assets](#assets)
 * [Network](#network)
@@ -157,6 +158,8 @@ rendering, `Tile` is a very useful abstraction. In addition to using them direct
 `QuadBatch`es, all of the high-level APIs accept `Tile` arguments: a `Texture` is just a `Tile`
 which renders the whole texture.
 
+**TODO**: talk about texture management.
+
 Other useful classes:
 
 * [TileSource] - handles the complications of delaying texture generation until asynchronous image
@@ -200,14 +203,15 @@ multiline text that is left, right and center justified, and which handles inter
 according to the font's metrics.
 
 It should be noted that the text layout and rendering capabilities of the HTML5 Canvas API (which
-is what's used by the HTML backend) are //severely// limited. As a result, text rendering on that
+is what's used by the HTML backend) are _severely_ limited. As a result, text rendering on that
 platform is not as consistent and high quality as it is on the other platform backends.
 
-### Scene graph
+### Retained mode
 
 In addition to all of the above [immediate mode] rendering APIs, PlayN also provides a retained
 mode API in the form of a 2D scene graph. This is a separate [playn-scene] library, which is
-included as part of the core distribtion.
+included as part of the core distribtion and described below in the [Scene graph](#scene-graph)
+section.
 
 ## Game loop
 
@@ -247,6 +251,160 @@ of simulation state to be drawn as smoothly and accurately as possible, even tho
 does not update as often as frames are drawn. More details on this approach can be found in [this
 article](http://gafferongames.com/game-physics/fix-your-timestep/).
 
+## Scene graph
+
+A scene graph is a way of arranging graphical elements hierarchically, such that the geometry
+transforms and other graphics state of the parent nodes in the graph are automatically applied to
+the children of those nodes. This can be very convenient, though it comes at a cost in memory use
+and rendering efficiency. Fortunately it is not an all or nothing proposition, and PlayN makes it
+easy to mix and match a scene graph with other direct rendering techniques in the same game.
+
+### Layers
+
+The two fundamental components of the scene graph are [Layer] and [GroupLayer]. Every node of the
+scene graph is a `Layer`, and nodes which have children are `GroupLayer`s. A layer maintains a
+bunch of rendering state:
+
+**Affine transform**: A layer's transform is used when drawing the layer, and is concatenated with
+the transforms of all of its children. When any given layer is rendered, the affine transform used
+will be the concatenation of all of the transforms from that layer up to the root of the scene
+graph.
+
+**Translation/scale/rotation**: Because the process of turning a translation, scale and rotation
+into an affine transform is not reversible, layers maintain translation, scale and rotation
+separately. This means you can read back the current translation, scale or rotation of a layer and
+manipulate it without running into issues like rotation wrapping around at `PI` or other
+mathematical oddities.
+
+**Origin**: One often wants the origin of a layer's coordinates to be somewhere other than the
+upper left (so that you can rotate it, or because it's a character and it makes sense to think
+about where the center of its feet are, etc.).
+
+**Tint and alpha**: Tint (which is `AARRGGBB` and thus includes alpha) is applied to all quads
+rendered by a layer, and is also combined with the tint of a layer's children. Thus one can set a
+tint or alpha value on a `GroupLayer` and all of its children will be rendered with that tint and
+alpha.
+
+**QuadBatch**: The root of a scene graph defines the `QuadBatch` used by default to render all
+layers, but any layer can configure a custom `QuadBatch` which will be used to render that layer
+and its children.
+
+**Visibility**: A layer can be made invisible and it and all of its children are skipped during
+rendering (and hit testing, described below).
+
+**Depth**: The immediate children of a `GroupLayer` are sorted by depth. Layers are rendered from
+lowest to highest depth. They are hit tested from highest to lowest depth, because layers with
+higher depth are drawn "on top of" (after) layers with lower depth, so this matches a viewer's
+expectations.
+
+The actual rendering of a `Layer` (and its children) takes place on a `Surface`. One simply calls
+`Layer.paint` on the root layer and supplies the surface to which they want to render the scene
+graph.
+
+### SceneGame
+
+Games that wish to use a scene graph as their main display can use the [SceneGame] helper class. It
+takes care of creating a default `QuadBatch` and a `Surface` which is configured to render to the
+main frame buffer, and it takes care of `paint`ing the main scene graph every time the `paint`
+signal is emitted. The game simply adds things to the `SceneGame.rootLayer` and they are drawn.
+
+### Layer menagerie
+
+Though a game can do everything it needs with `Layer` and `GroupLayer`, there are a number of
+other specialized `Layer` classes which are provided to handle common tasks.
+
+**[ImageLayer]**: this displays an `Image`, `Image.Region`, `Texture`, or `Tile`.
+
+**[CanvasLayer]**: if one is going to draw into a [Canvas] once and then display the resulting
+image in the scene graph, they can use [ImageLayer], but if one plans to repeatedly change the
+contents of the [Canvas] and wants those changes to show up, they should use `CanvasLayer`, because
+it handles all of the necessary plumbing. `CanvasLayer` provides `begin` and `end` methods which
+take care of reuploading the CPU memory bitmap data to the GPU into the appropriate texture so that
+the new contents of the `Canvas` are displayed by the layer.
+
+**[ClippedLayer]**: this takes care of managing a clipping region associated with a layer. Drawing
+commands are clipped to the region's bounds (a `ClippedLayer` has a known width and height). Note
+that `GroupLayer` can _optionally_ be clipped or not. Clipping is not free, so don't use it if you
+don't need it, but sometimes it's desirable to clip the rendering of a layer's children, in which
+case a clipped `GroupLayer` is just the thing. Note also that the clipping region for a
+`ClippedLayer` must be a simple rectangle in view coordinates. It cannot be rotated. The
+`ClippedLayer` will take care of scaling and translating that rectangle based on its affine
+transform, but that transform _cannot_ contain any rotations (not even 90 degree rotations).
+
+**[RootLayer]**: this serves as the root of a scene graph. It's just a `GroupLayer` that knows that
+it is always part of a scene graph. Because every `Layer` can emit a signal when it is added to a
+scene graph (and will be rendered) and when it is removed from a scene graph (and will no longer be
+rendered), the root layer is needed to differentiate between an actual scene graph and a
+disconnected fragment thereof.
+
+### Layer input and hit testing
+
+In addition to propagating render state down the scene graph, Layers also handle hit testing and
+dispatching mouse and touch input to the appropriate layer. A default hit testing mechanism is
+provided which takes care of transforming the to-be-tested point based on the affine transforms of
+all the layers in the scene graph, and checking whether the resulting transformed point is in the
+bounds of a particular layer.
+
+This means that only layers which know their size can be "hit" by default. An unclipped
+`GroupLayer` does not know its size. A layer handles its own painting by overridding `paintImpl`
+does not know its size. `ImageLayer` and `CanvasLayer` do know their size, as does a
+`ClippedLayer`. If a sizeless layer wants to participate in hit testing, it can be configured with a
+custom hit tester.
+
+**Interactions**: Dispatching input to layers takes the form of "interactions" (see [Interaction]).
+An interaction is started when a mouse button is pressed, or when a touch interaction starts. That
+event is used to determine which layer was hit by the input event and the hit layer becomes the
+interation layer. Mouse movement or touch movement events that come in after an interaction has
+started are dispatched to the interaction layer, no additional hit testing is performed to see if
+those events remain in the bounds of the interaction layer or potentially hit another layer. The
+interaction ends when the mouse button is released or the touch interaction ends.
+
+Touch events map naturally to interactions, and each separate touch interaction (finger) is tracked
+and dispatched individually to the layer hit when that interaction started. This is not always what
+you want, but if you are doing crazy multi-touch input handling, you should probably handle global
+[Touch] events and sort things out yourself.
+
+Mouse events do not always map to interactions, and some mouse events are thus dispatched in
+"one-shot" interactions. When no buttons are pressed, mouse motion events are dispatched as
+one-shot interactions to whatever layer is hit by the mouse motion. Mouse wheel events are
+dispatched to the current interaction if there is one, otherwise they are dispatched as one-shot
+interactions to whatever layer is under the mouse at the time. Mouse hover (enter/exit) events are
+always dispatched as one-shot interactions.
+
+**Interactivity**: To make event dispatch more efficient, each Layer tracks whether or not it is
+"interactive". If a layer or any of its children have event listeners registered, then that layer
+is interactive and participates in hit testing. If a layer (and none of its children) have no event
+listeners, it does not participate in hit testing. This is usually what you want, but if you are
+using hit testing or layer event dispatch for other purposes, you may want or need to manually
+configure layer interactivity.
+
+**Dispatchers, bubbling and capture**: None of this event dispatch happens by default. If you wish
+to receive a particular kind of per-layer event, you must register the appropriate dispatcher with
+the appropriate [Input] event signal. Per-layer event dispatch is expensive, so you get total
+control over whether and when this processing is performed.
+
+When you register your dispatcher, you also choose whether you want that dispatcher to support
+event _bubbling_. Bubbling means that an event is dispatched not only to the interaction layer, but
+also to every parent of that layer all the way to the root of the scene graph. This is very useful
+when you're implementing UI-behavior in a scene graph. A button might want to handle mouse clicks
+or touches, but when it is in a scrolling list and the user starts a touch interaction on the
+button but then flicks upward, the scrolling group that contains the button wants to take over and
+scroll the list instead of performing the button interaction, so they both need to hear the event
+stream. This leads us to _capture_.
+
+When event bubbling is enabled, multiple layers hear about the events in a given interaction. Any
+one of those layers can _capture_ the interaction and for the remainder of the interaction only
+that layer will hear the events, and all the other layers will receive a `CANCEL` event and hear
+nothing further about that interaction. This is again useful in scenarios like the above where an
+interaction starts out looking like a button press, but then turns into a scroll gesture, so the
+scrolling group can capture the interaction once it moves a certain distance from the point at
+which it started, the button will see the `CANCEL` and will disarm itself and stop processing the
+interaction, and the scrolling group can do whatever it needs to handle the scrolling gesture.
+
+**Layer.events**: Every layer has an `events` signal which is used to dispatch every kind of
+per-event layer. The event dispatch mechanisms make use of this events signal, but you can also use
+the signal for your own nefarious purposes.
+
 ## Audio
 
 PlayN supports both transient sound effects and streamed music. The API for sound effects and music
@@ -266,6 +424,8 @@ technologies to handle sound effect and music playback. The web seems to be [mov
 WebAudio](http://caniuse.com/#feat=audio-api) but it's not widely enough deployed for PlayN to rely
 solely upon it for audio playback.
 
+**TODO:** mention `Sound.prepare` and latency minimization.
+
 ## Assets
 
 The [Assets] class allows one to load [Image]s, [Sound]s, text and binary data. APIs are provided
@@ -280,7 +440,28 @@ be composed in powerful ways: transforming the results when they arrive, chainin
 together and consolidating failure handling, sequencing multiple futures into a single future and
 reacting to the completion or failure of all the sub-futures at once.
 
-As mentioned above, the high-level 
+As mentioned above, the high-level graphics APIs use [TileSource] to simplify the handling of
+asynchronously loaded images. You can load an [Image] asynchronously and stuff it into an
+[ImageLayer] and it will simply display nothing until the `Image` is done loading. Similarly, you
+can extract an [Image.Region] from a still-loading image, pass that to an [ImageLayer] and
+everything will just work.
+
+That said, sometimes you just have to generate a `Texture` from an `Image` and that can't happen
+until the image is loaded. You can use [Image.textureAsync] to obtain an `RFuture` which completes
+with the image's texture or you can wait directly on `Image.state`.
+
+Sounds are also loaded asynchronously, but the developer is almost entirely shielded from that
+because all of the sound APIs simply attempt to "do the right thing" if the sound is not yet
+loaded. If you load a [Sound] and call `play`, but the sound is not yet loaded, the sound will
+start playing once it is loaded.
+
+Naturally this is only appropriate for music, not sound effects which are almost always coordinated
+with some visual counterpart. You can either check `Sound.isLoaded` and skip the sound effect this
+time, or use the same `RFuture` tools to wait for sound loading to complete. Listen individually to
+`Sound.state` or aggregate sounds into a `List` and use `RFuture.sequence` to wait for them all to
+load.
+
+...
 
 ## Network
 
@@ -290,35 +471,45 @@ TBD
 
 TBD
 
-[Assets]: http://playn.github.io/docs/core/api/playn/core/Assets.html
-[Canvas]: http://playn.github.io/docs/core/api/playn/core/Canvas.html
-[Clock]: http://playn.github.io/docs/core/api/playn/core/Clock.html
-[Disposable]: http://playn.github.io/docs/core/api/playn/core/Disposable.html
-[GL20.Buffers]: http://playn.github.io/docs/core/api/playn/core/GL20.Buffers.html
-[GL20]: http://playn.github.io/docs/core/api/playn/core/GL20.html
-[GLBatch]: http://playn.github.io/docs/core/api/playn/core/GLBatch.html
-[GLBatch]: http://playn.github.io/docs/core/api/playn/core/GLBatch.html
-[GLProgram]: http://playn.github.io/docs/core/api/playn/core/GLProgram.html
-[Game]: http://playn.github.io/docs/core/api/playn/core/Game.html
-[Graphics]: http://playn.github.io/docs/core/api/playn/core/Graphics.html
-[Image.Region]: http://playn.github.io/docs/core/api/playn/core/Image.Region.html
-[Image]: http://playn.github.io/docs/core/api/playn/core/Image.html
-[Image]: http://playn.github.io/docs/core/api/playn/core/Image.html
+[Assets]: http://playn.github.io/docs/api/core/playn/core/Assets.html
+[CanvasLayer]: http://playn.github.io/docs/api/scene/playn/scene/CanvasLayer.html
+[Canvas]: http://playn.github.io/docs/api/core/playn/core/Canvas.html
+[ClippedLayer]: http://playn.github.io/docs/api/scene/playn/scene/ClippedLayer.html
+[Clock]: http://playn.github.io/docs/api/core/playn/core/Clock.html
+[Disposable]: http://playn.github.io/docs/api/core/playn/core/Disposable.html
+[GL20.Buffers]: http://playn.github.io/docs/api/core/playn/core/GL20.Buffers.html
+[GL20]: http://playn.github.io/docs/api/core/playn/core/GL20.html
+[GLBatch]: http://playn.github.io/docs/api/core/playn/core/GLBatch.html
+[GLBatch]: http://playn.github.io/docs/api/core/playn/core/GLBatch.html
+[GLProgram]: http://playn.github.io/docs/api/core/playn/core/GLProgram.html
+[Game]: http://playn.github.io/docs/api/core/playn/core/Game.html
+[Graphics]: http://playn.github.io/docs/api/core/playn/core/Graphics.html
+[GroupLayer]: http://playn.github.io/docs/api/scene/playn/scene/GroupLayer.html
+[Image.Region]: http://playn.github.io/docs/api/core/playn/core/Image.Region.html
+[ImageLayer]: http://playn.github.io/docs/api/scene/playn/scene/ImageLayer.html
+[Image]: http://playn.github.io/docs/api/core/playn/core/Image.html
+[Image]: http://playn.github.io/docs/api/core/playn/core/Image.html
+[Input]: http://playn.github.io/docs/api/core/playn/core/Input.html
+[Interaction]: http://playn.github.io/docs/api/scene/playn/scene/Interaction.html
+[Layer]: http://playn.github.io/docs/api/scene/playn/scene/Layer.html
 [OpenGL ES 2.0]: https://www.khronos.org/opengles/2_X/
-[QuadBatch]: http://playn.github.io/docs/core/api/playn/core/QuadBatch.html
+[QuadBatch]: http://playn.github.io/docs/api/core/playn/core/QuadBatch.html
 [RFuture]: http://threerings.github.io/react/apidocs/react/RFuture.html
 [React]: https://github.com/threerings/react
-[RenderTarget]: http://playn.github.io/docs/core/api/playn/core/RenderTarget.html
-[Sound]: http://playn.github.io/docs/core/api/playn/core/Sound.html
-[Surface]: http://playn.github.io/docs/core/api/playn/core/Surface.html
-[TextBlock]: http://playn.github.io/docs/core/api/playn/core/TextBlock.html
-[TextFormat]: http://playn.github.io/docs/core/api/playn/core/TextFormat.html
-[TextLayout]: http://playn.github.io/docs/core/api/playn/core/TextLayout.html
-[TextWrap]: http://playn.github.io/docs/core/api/playn/core/TextWrap.html
-[Texture]: http://playn.github.io/docs/core/api/playn/core/Texture.html
-[TileSource]: http://playn.github.io/docs/core/api/playn/core/TileSource.html
-[Tile]: http://playn.github.io/docs/core/api/playn/core/Tile.html
-[TriangleBatch]: http://playn.github.io/docs/core/api/playn/core/TriangleBatch.html
-[UniformQuadBatch]: http://playn.github.io/docs/core/api/playn/core/UniformQuadBatch.html
+[RenderTarget]: http://playn.github.io/docs/api/core/playn/core/RenderTarget.html
+[RootLayer]: http://playn.github.io/docs/api/scene/playn/scene/RootLayer.html
+[SceneGame]: http://playn.github.io/docs/api/scene/playn/scene/SceneGame.html
+[Sound]: http://playn.github.io/docs/api/core/playn/core/Sound.html
+[Surface]: http://playn.github.io/docs/api/core/playn/core/Surface.html
+[TextBlock]: http://playn.github.io/docs/api/core/playn/core/TextBlock.html
+[TextFormat]: http://playn.github.io/docs/api/core/playn/core/TextFormat.html
+[TextLayout]: http://playn.github.io/docs/api/core/playn/core/TextLayout.html
+[TextWrap]: http://playn.github.io/docs/api/core/playn/core/TextWrap.html
+[Texture]: http://playn.github.io/docs/api/core/playn/core/Texture.html
+[TileSource]: http://playn.github.io/docs/api/core/playn/core/TileSource.html
+[Tile]: http://playn.github.io/docs/api/core/playn/core/Tile.html
+[Touch]: http://playn.github.io/docs/api/core/playn/core/Touch.html
+[TriangleBatch]: http://playn.github.io/docs/api/core/playn/core/TriangleBatch.html
+[UniformQuadBatch]: http://playn.github.io/docs/api/core/playn/core/UniformQuadBatch.html
 [immediate mode]: http://en.wikipedia.org/wiki/Immediate_mode_%28computer_graphics%29
-[playn-scene]: http://playn.github.io/docs/scene/api/
+[playn-scene]: http://playn.github.io/docs/api/scene/
