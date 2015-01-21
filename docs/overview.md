@@ -1,4 +1,4 @@
-  ---
+---
 layout: docs
 ---
 
@@ -221,8 +221,8 @@ both visual and audio output buffers, all 30 to 60 times per second.
 
 PlayN follows that same structure. With some frequency (each platform has its own restrictions and
 requirements for configuring the game loop frequency), PlayN polls for user input, generates events
-for that input (see [Input](#input) below for details), and then emits a frame signal to tell the
-game to generate the next frame of graphics and audio output.
+for that input (see [Input](#input) below for details), and then emits the [Platform].`frame`
+signal to tell the game to generate the next frame of graphics and audio output.
 
 A game can do whatever it wants to generate its frame, but we also provide a [Game] class which
 implements a common approach to game architecture that separates the frame into two parts:
@@ -250,6 +250,11 @@ hypothetical next simulation state (which is usually dead reckoned). This allows
 of simulation state to be drawn as smoothly and accurately as possible, even though the simulation
 does not update as often as frames are drawn. More details on this approach can be found in [this
 article](http://gafferongames.com/game-physics/fix-your-timestep/).
+
+In addition to the `frame` signal and the game loop, PlayN reports certain lifecycle events via the
+[Platform].`lifecycle` signal. This is mainly useful on mobile where a game can be put into the
+background, but the desktop Java platform also reports the game as paused when its window loses
+focus, and resumed when the window regains focus.
 
 ## Scene graph
 
@@ -424,7 +429,10 @@ technologies to handle sound effect and music playback. The web seems to be [mov
 WebAudio](http://caniuse.com/#feat=audio-api) but it's not widely enough deployed for PlayN to rely
 solely upon it for audio playback.
 
-**TODO:** mention `Sound.prepare` and latency minimization.
+Due to the widely varying platform sound APIs, PlayN is not able to provide great latency
+guarantees on sound effect playback. It does provide `Sound.prepare` to allow a game to indicate
+that it plans to play one or more sounds soon, and backends that can will use that hint to pre-load
+those sounds' data in order to reduce latency on the first `play` call.
 
 ## Assets
 
@@ -442,12 +450,12 @@ reacting to the completion or failure of all the sub-futures at once.
 
 As mentioned above, the high-level graphics APIs use [TileSource] to simplify the handling of
 asynchronously loaded images. You can load an [Image] asynchronously and stuff it into an
-[ImageLayer] and it will simply display nothing until the `Image` is done loading. Similarly, you
-can extract an [Image.Region] from a still-loading image, pass that to an [ImageLayer] and
-everything will just work.
+[ImageLayer] and it will simply display nothing until the image is done loading. Similarly, you can
+extract an [Image.Region] from a still-loading image, pass that to an [ImageLayer] and everything
+will just work.
 
 That said, sometimes you just have to generate a `Texture` from an `Image` and that can't happen
-until the image is loaded. You can use [Image.textureAsync] to obtain an `RFuture` which completes
+until the image is loaded. You can use `Image.textureAsync` to obtain an [RFuture] which completes
 with the image's texture or you can wait directly on `Image.state`.
 
 Sounds are also loaded asynchronously, but the developer is almost entirely shielded from that
@@ -457,31 +465,109 @@ start playing once it is loaded.
 
 Naturally this is only appropriate for music, not sound effects which are almost always coordinated
 with some visual counterpart. You can either check `Sound.isLoaded` and skip the sound effect this
-time, or use the same `RFuture` tools to wait for sound loading to complete. Listen individually to
+time, or use the same [RFuture] tools to wait for sound loading to complete. Listen individually to
 `Sound.state` or aggregate sounds into a `List` and use `RFuture.sequence` to wait for them all to
 load.
 
-...
+Text and binary loading are fairly straightforward, with the caveat that binary loading is not
+supported on the HTML5 backend. Perhaps someday browsers support for the APIs needed to implement
+this will be widely available and PlayN will leverage them.
 
 ## Network
 
-TBD
+PlayN supports two forms of network communication: HTTP requests and WebSocket connections.
+
+HTTP connections provide all of the functionality you would expect via [Net.Builder] and
+[Net.Response]: setting and reading HTTP headers, `https` support. HTTP requests are always
+executed asynchronously with their results delivered via an [RFuture]. Note that streaming of HTTP
+response data is not supported. The entire response is read into a buffer and delivered all at once
+to the game. Platform limitations (HTML5, as usual) constrain us there, though support for
+downloading data to local storage is probably a good idea and worth implementing even if it's not
+supported by the HTML backend. TODO!
+
+[Net.WebSocket] connections allow for the exchange of text or binary messages with a server over a
+persistent socket connection. Binary messages are not currently supported by the HMTL5 backend.
 
 ## Platforms
 
-TBD
+PlayN currently supports four target platforms:
+
+### Desktop Java
+
+The desktop Java backend uses a standard [Java VM] and uses [LWJGL] to access OpenGL on the
+supported desktop OSes: Windows, Mac OS X, and Linux. This is the backend that one uses for day to
+day development of their game, which allows one to leverage all of the sophisticated tools
+available in the Java ecosystem.
+
+For example, using [JRebel] or the [Eclipse IDE]'s edit and continue support allows one to make
+code changes and have that new code hot reloaded into their running game. Needless to say, this can
+dramatically increase one's efficiency when tuning game behavior or doing experimental coding.
+
+It is also possible to deploy games for this platform. The standard PlayN Maven build supports the
+creation of a single standalone jar file which contains the entire game and assets and which can be
+paired with a per-platform Java launcher for consumer delivery, or easily sent to teammates to test
+out new builds by running `java -jar yourgame.jar`.
+
+### Android
+
+The Android backend simply uses the standard Android platform APIs, which are already designed to
+be used from Java. The only thing to note is that PlayN requires API level 15 or higher (Android
+4.0.3 or higher). Google's reports in January of 2015 indicate that over 92% of Android devices are
+running 4.0.3 or later.
+
+### iOS
+
+The iOS backend uses [RoboVM] to compile Java bytecode to ARM executables for deployment on iOS.
+RoboVM provides excellent emulation of a great many of the JRE APIs, which allows one to use many
+third-party Java libraries if they restrict their deployments to Java, Android and iOS. RoboVM also
+provides Java-friendly translations of nearly all of the native iOS APIs, which allows games to
+implement iOS-specific functionality (like Game Center integration, camera access, etc.) directly
+in Java using most of the same tools they use to develop their game.
+
+Note that building and deploying a game to iOS can only be done on a Mac due to the inavailability
+of the developer tools on other platforms.
+
+### HTML5
+
+The HTML5 backend uses [GWT] to translate Java code into JavaScript, and uses the [WebGL],
+[Canvas2D] and other browser APIs to implement the PlayN services.
+
+Due to limitations of the JavaScript virtual machine and browser APIs, the HTML5 backend is the
+most limited of all the backends. It does not support synchronous asset loading, nor binary data
+loading or processing. Care must be taken to ensure good performance, especially if one plans to
+run their game on mobile browsers.
+
+That said, it is by far the most accessible way to deploy your game. If you can just send someone a
+URL and TADA your game appears in their web browser, no OS security warnings, no app stores, no
+fuss, then you have taken a big step toward solving one of the hardest problems in game
+development: getting people to actually try your game.
+
+## More information
+
+For more detailed information on the PlayN platform, you should refer to the [source
+code](https://github.com/playn/playn). It is quite well organized and readable (if I do say so
+myself), and one can often directly and easily find answers to tricky implementation detail
+questions.
+
+One can also ask questions on the [mailing list](http://groups.google.com/group/playn) where you
+will find the maintainers and many active users of the library. For "how do I do X" questions,
+please check the [cookbook](/cookbook/) and also [Stack
+Overflow](http://stackoverflow.com/questions/tagged/playn).
 
 [Assets]: http://playn.github.io/docs/api/core/playn/core/Assets.html
+[Canvas2D]: http://www.w3.org/TR/2dcontext/
 [CanvasLayer]: http://playn.github.io/docs/api/scene/playn/scene/CanvasLayer.html
 [Canvas]: http://playn.github.io/docs/api/core/playn/core/Canvas.html
 [ClippedLayer]: http://playn.github.io/docs/api/scene/playn/scene/ClippedLayer.html
 [Clock]: http://playn.github.io/docs/api/core/playn/core/Clock.html
 [Disposable]: http://playn.github.io/docs/api/core/playn/core/Disposable.html
+[Eclipse IDE]: https://eclipse.org/
 [GL20.Buffers]: http://playn.github.io/docs/api/core/playn/core/GL20.Buffers.html
 [GL20]: http://playn.github.io/docs/api/core/playn/core/GL20.html
 [GLBatch]: http://playn.github.io/docs/api/core/playn/core/GLBatch.html
 [GLBatch]: http://playn.github.io/docs/api/core/playn/core/GLBatch.html
 [GLProgram]: http://playn.github.io/docs/api/core/playn/core/GLProgram.html
+[GWT]: http://www.gwtproject.org/
 [Game]: http://playn.github.io/docs/api/core/playn/core/Game.html
 [Graphics]: http://playn.github.io/docs/api/core/playn/core/Graphics.html
 [GroupLayer]: http://playn.github.io/docs/api/scene/playn/scene/GroupLayer.html
@@ -491,12 +577,20 @@ TBD
 [Image]: http://playn.github.io/docs/api/core/playn/core/Image.html
 [Input]: http://playn.github.io/docs/api/core/playn/core/Input.html
 [Interaction]: http://playn.github.io/docs/api/scene/playn/scene/Interaction.html
+[JRebel]: http://zeroturnaround.com/software/jrebel/
+[Java VM]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+[LWJGL]: http://www.lwjgl.org/
 [Layer]: http://playn.github.io/docs/api/scene/playn/scene/Layer.html
+[Net.Builder]: http://playn.github.io/docs/api/core/playn/core/Net.Builder.html
+[Net.Response]: http://playn.github.io/docs/api/core/playn/core/Net.Response.html
+[Net.WebSocket]: http://playn.github.io/docs/api/core/playn/core/Net.WebSocket.html
 [OpenGL ES 2.0]: https://www.khronos.org/opengles/2_X/
+[Platform]: http://playn.github.io/docs/api/core/playn/core/Platform.html
 [QuadBatch]: http://playn.github.io/docs/api/core/playn/core/QuadBatch.html
 [RFuture]: http://threerings.github.io/react/apidocs/react/RFuture.html
 [React]: https://github.com/threerings/react
 [RenderTarget]: http://playn.github.io/docs/api/core/playn/core/RenderTarget.html
+[RoboVM]: http://www.robovm.com/
 [RootLayer]: http://playn.github.io/docs/api/scene/playn/scene/RootLayer.html
 [SceneGame]: http://playn.github.io/docs/api/scene/playn/scene/SceneGame.html
 [Sound]: http://playn.github.io/docs/api/core/playn/core/Sound.html
@@ -511,5 +605,6 @@ TBD
 [Touch]: http://playn.github.io/docs/api/core/playn/core/Touch.html
 [TriangleBatch]: http://playn.github.io/docs/api/core/playn/core/TriangleBatch.html
 [UniformQuadBatch]: http://playn.github.io/docs/api/core/playn/core/UniformQuadBatch.html
+[WebGL]: https://www.khronos.org/webgl/
 [immediate mode]: http://en.wikipedia.org/wiki/Immediate_mode_%28computer_graphics%29
 [playn-scene]: http://playn.github.io/docs/api/scene/

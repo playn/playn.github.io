@@ -28,6 +28,7 @@ PlayN is free and open source, released under the Apache 2.0 license.
 * Read an [overview](docs/overview.html) of the PlayN functionality
 * Build and run the [demos](docs/#demos)
 * Work through the [Reversi tutorial](docs/tutorial.html)
+* Read our [cookbook](cookbook) of delicious coding recipes
 * See all the [documentation](docs)
 
 ## Community
