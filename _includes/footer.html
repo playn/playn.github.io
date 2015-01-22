@@ -8,7 +8,7 @@
 function add_invader (y) {
   console.log(y + " " + document.body.offsetHeight);
   if (y > document.body.offsetHeight) return; // done!
-  var scale = 10;
+  var scale = 2;
   var box = document.createElement('div')
   box.className = 'bg';
   var img = document.createElement('img')
@@ -21,9 +21,9 @@ function add_invader (y) {
     box.style.top = y + 'px';
     box.style.width = (scale*iwidth) + 'px';
     box.style.height = (scale*img.height) + 'px';
-    img.style.opacity = 0.10;
+    img.style.opacity = 0.40;
     img.style.position = 'absolute';
-    // img.style.left = -(scale*iwidth) + 'px';
+    if (Math.random() > 0.5) img.style.left = -(scale*iwidth) + 'px';
     add_invader(y+img.height+scale*5);
   }
   box.appendChild(img);

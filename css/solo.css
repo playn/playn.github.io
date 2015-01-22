@@ -175,4 +175,8 @@ pre > code {
   image-rendering:pixelated;                 /* CSS4 Proposed  */
   -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
   height: 100%;
+
+  filter: gray; /* IE6-9 */
+  filter: grayscale(1); /* Firefox 35+ */
+  -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
 }
