@@ -9,11 +9,12 @@ into sections, to keep the pages from growing so large that they crash your brow
 hopefully be able to guess which section is likely to contain the recipe they seek and can then
 scan the recipes or use their browser's search functionality to dig deeper.
 
-* [Graphics](graphics.html)
-* [Scene graph](scene-graph.html)
-* [Sound](sound.html)
-* [Input](input.html)
-* [Net](net.html)
+* [Graphics](graphics.html) - using `Image`, `Canvas`, `Texture`, `Surface`, etc.
+* [Scene graph](scene-graph.html) - `Layer`-related things
+* [Sound](sound.html) - `Sound` and fury
+* [Input](input.html) - `Mouse`, `Touch`, `Pointer` and `Keyboard`
+* [Net](net.html) - networking for fun and profit
+* [Build](build.html) - Maven, IDEs, and other modern torture devices
 
 Each recipe contains just the code snippet that accomplishes the goal in question. An easy way to
 play with the snippets is to check out the [Hello] sample game and then paste the snippets into
