@@ -4,13 +4,13 @@ layout: docs
 
 # Docs
 
-If you're new to PlayN, reading the Overview documentation will give you an idea of what PlayN is
-and what functionality it provides. Then you might like to build and run some demos or jump right
-into a tutorial and build something with it.
+If you're new to PlayN, read the Overview documentation to get an idea of what PlayN is and what
+functionality it provides. Then you might like to build and run some [demos](#demos) or jump right
+into the [tutorial](tutorial.html) and build a game.
 
 * [Overview](overview.html)
 * Javadocs: [core](api/core/),  [scene](api/scene/)
-* [Release notes](release_notes.html)
+* [Release notes](release/notes.html)
 * [Source code](http://github.com/playn/playn)
 
 ## Tutorial
