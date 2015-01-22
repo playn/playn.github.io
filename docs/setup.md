@@ -150,11 +150,11 @@ tap the screen to create some peas!
 
 ### iOS backend
 
-TBD
+TODO
 
 ### HTML5 backend
 
-TBD
+TODO
 
 
 [Android SDK]: http://developer.android.com/sdk/index.html

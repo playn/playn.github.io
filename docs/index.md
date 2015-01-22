@@ -20,7 +20,8 @@ with PlayN. It will assume you've read the overview documentation above to under
 components of PlayN and what they do.
 
 * [Development environment](setup.html)
-* [Create a skeleton game](tutorial.html#skeleton)
+* [Create a skeleton game](skeleton.html)
+* [Model the game board](tutorial.html#modeling)
 * [Draw the board](tutorial.html#drawing)
 * [Handle player input](tutorial.html#input)
 * [Make some noise](tutorial.html#audio)
