@@ -10,6 +10,7 @@ layout: docs
 
 * Everything has changed! Well, not everything, but a lot of stuff.
 * Read the [overview](../overview.html) documentation for a summary of the new world order.
+* Read the [1.x to 2.x migration guide](Migrating1xto2x.html) for details on changes.
 
 ## PlayN v1.x
 
