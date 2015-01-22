@@ -4,5 +4,40 @@
       <a href="https://github.com/playn/playn/blob/master/AUTHORS.md">PlayN developers</a>
     </div>
   </div>
+<!--
+  <div id="bg" style="">
+    <img id="invader0" src="/images/invaders0.png"/>
+    <img id="invader1" src="/images/invaders1.png"/>
+    <img id="invader2" src="/images/invaders2.png"/>
+    <img id="spaceship" src="/images/spaceship.png"/>
+  </div>
+-->
+  <script>
+function add_invader (y) {
+  console.log(y + " " + document.body.offsetHeight);
+  if (y > document.body.offsetHeight) return; // done!
+  var scale = 10;
+  var box = document.createElement('div')
+  box.className = 'bg';
+  var img = document.createElement('img')
+  var which = Math.floor(Math.random() * 3);
+  img.src = '/images/invaders' + which + '.png';
+  img.onload = function () {
+    var iwidth = img.width/2;
+    var x = Math.round(Math.random() * document.body.offsetWidth - scale*iwidth/2);
+    box.style.left = x + 'px';
+    box.style.top = y + 'px';
+    box.style.width = (scale*iwidth) + 'px';
+    box.style.height = (scale*img.height) + 'px';
+    img.style.opacity = 0.10;
+    img.style.position = 'absolute';
+    // img.style.left = -(scale*iwidth) + 'px';
+    add_invader(y+img.height+scale*5);
+  }
+  box.appendChild(img);
+  document.body.appendChild(box);
+}
+add_invader(0);
+  </script>
 </body>
 </html>
