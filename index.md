@@ -7,9 +7,9 @@ layout: default
 [PlayN] is a Java library for writing games which can be deployed to:
 
 * Windows/Mac/Linux desktop Java
-* HTML5 browsers
-* Android devices
 * iOS devices
+* Android devices
+* HTML5 browsers
 
 PlayN is free and open source, released under the Apache 2.0 license.
 
@@ -17,8 +17,9 @@ PlayN is free and open source, released under the Apache 2.0 license.
 
 * Program against one API and deploy to desktops, browsers and mobile devices
 * High and low-level drawing APIs are provided: write directly to [OpenGL], use [QuadBatch] and our
-  built-in shaders, use [Surface] for an accelerated Canvas-like API, or use the 2D scene graph
-* Streaming music and sound effect playback
+  built-in shaders, use [Surface] for an accelerated Canvas-like API, or use the [2D scene graph]
+* 2D (CPU) Canvas drawing API, with text rendering
+* Music and sound effect playback
 * Mouse, touch and keyboard input
 * The [TriplePlay] library builds on PlayN to provide a UI toolkit, tweened animations, keyframe
   animation, particle systems, and much more
@@ -43,8 +44,9 @@ PlayN is free and open source, released under the Apache 2.0 license.
 * Get the PlayN [source code](http://github.com/playn/playn) on Github
 * Read the [release notes](docs/release_notes.html)
 
-[PlayN]: http://playn.github.io
+[2D scene graph]: docs/overview.html#scene-graph
 [OpenGL]: docs/overview.html#opengl
+[PlayN]: http://playn.github.io
 [QuadBatch]: docs/overview.html#quadbatch
 [Surface]: docs/overview.html#surface
 [TriplePlay]: https://github.com/threerings/tripleplay
