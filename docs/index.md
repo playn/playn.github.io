@@ -13,18 +13,13 @@ into the [tutorial](tutorial.html) and build a game.
 * [Release notes](release/notes.html)
 * [Source code](http://github.com/playn/playn)
 
-## Tutorial
+## Tutorials
 
-This [tutorial](tutorial.html) describes the process of building a simple Reversi game from scratch
-with PlayN. It will assume you've read the overview documentation above to understand the basic
-components of PlayN and what they do.
+Here you can learn how to use PlayN functionality step by step in the process of building a simple
+game.
 
-* [Development environment](setup.html)
-* [Create a skeleton game](skeleton.html)
-* [Model the game board](tutorial.html#modeling)
-* [Draw the board](tutorial.html#drawing)
-* [Handle player input](tutorial.html#input)
-* [Make some noise](tutorial.html#audio)
+* [Reversi tutorial](reversi-tutorial.html)
+* [Space Invaders tutorial](invaders-tutorial.html)
 
 ## Demos
 

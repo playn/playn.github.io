@@ -2,7 +2,7 @@
 layout: docs
 ---
 
-# Tutorial
+# Reversi tutorial
 
 Here we explain how to make a simple [Reversi] game, from scratch, using PlayN. You may wish to
 read the [overview](overview.html) before doing this tutorial, or just jump in and then refer back
