@@ -24,7 +24,7 @@ hello/pom.xml - main project Maven build file
 ```
 
 The main cross-platform game code is in the `core` module. The cross-platform game assets are in
-the `assets` module. Due to requirements of the Anrdoid and RoboVM builds, it is most convenient to
+the `assets` module. Due to requirements of the Android and RoboVM builds, it is most convenient to
 have the assets in a separate module rather than bundled with the `core` module. The remaining
 modules deal with the various supported target platforms.
 

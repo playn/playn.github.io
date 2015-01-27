@@ -158,7 +158,7 @@ when we're doing the math to decide where to position the board view in the main
 
 The method that does all the work is `paintImpl`. Every [Layer] draws itself to a [Surface]. This
 is an accelerated drawing API where every drawing command results in a quad getting added to a
-[Quadbatch] for eventual rendering by the GPU. In this case, we're drawing some lines. Lines are
+[QuadBatch] for eventual rendering by the GPU. In this case, we're drawing some lines. Lines are
 just really skinny quads which are filled, in this case, by a solid color. We could also use
 [Surface].`setFillPattern` to fill them with a texture, if we wanted to be fancy.
 
@@ -1095,7 +1095,7 @@ eye on the `FlipBatch` and configure the [ImageLayer] displaying our potential m
 `FlipBatch`. Then we `tween` the flip angle from 0 to PI/2, which rotates the layer to the halfway
 point, then we use another action to switch the tile displayed by the [ImageLayer] from the old
 color to the new color, then we tween the angle the rest of the way (PI/2 to PI). Finally we clear
-out the batch, and add a barrier so that each of these animations procedes one after another.
+out the batch, and add a barrier so that each of these animations proceeds one after another.
 
 In this case, it's essential that we run these animations serially. If we tried to run multiple
 flip animations in parallel, the code that changes `FlipBatch.eyeX` and `eyeY` would all run at the

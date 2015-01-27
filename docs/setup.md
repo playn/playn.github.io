@@ -14,7 +14,7 @@ Maven-based projects, which means that you should at least be able to check out 
 game, and run the Java backend, without difficulty. The complications arise when you try to build
 and deploy the other backends (Android, iOS, HTML5) via your IDE.
 
-Personally, I recommend just usign the command line to build and deploy all backends except Java,
+Personally, I recommend just using the command line to build and deploy all backends except Java,
 because you don't need to do it very often and it is simple and reliable to do so. The main
 maintainer of PlayN builds and deploys things that way, so you know it's going to work. However, it
 *is* possible to build and deploy the other backends via your IDE. Search Google and you'll find
@@ -31,7 +31,7 @@ familiar with (remember, I use Maven for all that), so these docs won't be expla
 
 [Maven] is a build system for Java applications which has a lot of terrible properties, but some
 really nice ones which dramatically simplify the development of applications that depend on lots of
-libraries. It's thanks to Maven that the *extraordinairily* complex problem of building and
+libraries. It's thanks to Maven that the *extraordinarily* complex problem of building and
 deploying a single application to *four totally different* application platforms can be
 accomplished with four trivially simple command line invocations of one tool. So when you're knee
 deep in some annoying build problem and hating Maven and the horse it rode in on, remember that it

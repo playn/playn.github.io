@@ -131,7 +131,7 @@ the more traditional 2D sense. A `Surface` does a few useful things for you:
   transform
 * it allows you to treat textures as patterns and fill rectangles and lines with them (under the
   hood, it's all the same to GL: textured quads all the way down)
-* it exposes a simplfied API for doing clipping; clip rectangles are intersected for you and
+* it exposes a simplified API for doing clipping; clip rectangles are intersected for you and
   maintained in a stack
 
 Because `Surface` is rendering to a `QuadBatch` under the hood, you have to bracket all of your
@@ -196,7 +196,7 @@ canvas:
 bitmaps can then be uploaded to GPU memory to create textures for eventual drawing to the
 framebuffer. Though there is no guarantee that every platform will create the same bit-for-bit
 result from the same set of drawing commands, our experience has been that all the platforms
-supported by PlayN are constistent enough to make this functionality very useful.
+supported by PlayN are consistent enough to make this functionality very useful.
 
 ### Text rendering
 
@@ -222,7 +222,7 @@ platform is not as consistent and high quality as it is on the other platform ba
 
 In addition to all of the above [immediate mode] rendering APIs, PlayN also provides a retained
 mode API in the form of a 2D scene graph. This is a separate [playn-scene] library, which is
-included as part of the core distribtion and described below in the [Scene graph](#scene-graph)
+included as part of the core distribution and described below in the [Scene graph](#scene-graph)
 section.
 
 ## Game loop
@@ -412,7 +412,7 @@ The actual rendering of a `Layer` (and its children) takes place on a `Surface`.
 graph.
 
 This means that a layer can be inserted into the scene graph which does a bunch of immediate mode
-drawing, using whatever approach is most efficent for the game in question, while still cooperating
+drawing, using whatever approach is most efficient for the game in question, while still cooperating
 with the rest of the scene graph (which may contain a UI or other things that are well suited to a
 scene graph and for which performance isn't a big issue). Or a game could handle its own drawing
 for the main game view and then paint a scene graph on top of that, for a HUD or UI.
@@ -467,7 +467,7 @@ bounds of a particular layer.
 This means that only layers which know their size can be "hit" by default. An unclipped
 `GroupLayer` does not know its size. An `ImageLayer` and `CanvasLayer` know their size, as do a
 `ClippedLayer` and clipped `GroupLayer`. A custom `Layer` which handles its own painting by
-overridding `paintImpl` does not know its size (unless it overrides `width` and `height`). If a
+overriding `paintImpl` does not know its size (unless it overrides `width` and `height`). If a
 sizeless layer wants to participate in hit testing, it can be configured with a custom hit tester.
 
 **Interactions**: Dispatching input to layers takes the form of "interactions" (see [Interaction]).
@@ -544,7 +544,7 @@ code changes and have that new code hot reloaded into their running game. Needle
 dramatically increase one's efficiency when tuning game behavior or doing experimental coding.
 
 It is also possible to deploy games for this platform. The standard PlayN Maven build supports the
-creation of a single standalone jar file which contains the entire game and assets and which can be
+creation of a single stand-alone jar file which contains the entire game and assets and which can be
 paired with a per-platform Java launcher for consumer delivery, or easily sent to teammates to test
 out new builds by running `java -jar yourgame.jar`.
 
