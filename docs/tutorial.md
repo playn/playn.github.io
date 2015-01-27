@@ -102,8 +102,9 @@ public class Reversi extends SceneGame {
 model which automatically supports adding listeners which are notified when anything changes. We'll
 see how that works below when we start wiring things up.
 
-If you cloned the [Reversi tutorial] project, you can see the code up to this point by looking at
-the [modeling](https://github.com/playn/reversi-tutorial#TODO) branch.
+If you cloned the [Reversi tutorial] project, you can see the code up to now by looking at the
+[modeling](https://github.com/playn/reversi-tutorial/tree/modeling/core/src/main/java/reversi/core)
+branch.
 
 ## Drawing
 
@@ -197,7 +198,8 @@ When you run the game, you should now see a nice grid on a grey background:
 ![Reversi board with grid](reversi-drawing-grid.png)
 
 You can see the code up to this point by looking at the
-[drawing-board](https://github.com/playn/reversi-tutorial#TODO) branch.
+[drawing-board](https://github.com/playn/reversi-tutorial/tree/drawing-board/core/src/main/java/reversi/core)
+branch.
 
 ### Drawing the pieces
 
@@ -214,11 +216,13 @@ for all the pieces. We'll start by just putting the `BoardView` in it:
 public class GameView extends GroupLayer {
   private final Reversi game;
   private final BoardView bview;
+  private final GroupLayer pgroup = new GroupLayer();
 
   public GameView (Reversi game, IDimension viewSize) {
     this.game = game;
     this.bview = new BoardView(game, viewSize);
     addCenterAt(bview, viewSize.width()/2, viewSize.height()/2);
+    addAt(pgroup, bview.tx(), bview.ty());
   }
 }
 ```
@@ -232,7 +236,11 @@ and change `Reversi.java` thusly:
 +    rootLayer.add(new GameView(this, size));
 ```
 
-Now we can get down to work on drawing some pieces. First we need to create some piece textures,
+`GameView` contains the `BoardView`, and it contains another `GroupLayer` (`pgroup`) which is going
+to contain the piece layers. We position `pgroup` at the same location that we position the board
+view so that coordinates in `bview` and `pgroup` are the same, which will come in handy later.
+
+Now we can get down to work on drawing some pieces. First we need to create some piece images,
 which we'll do using the [Canvas] API. Change `GameView` like so:
 
 ```java
@@ -248,10 +256,19 @@ which we'll do using the [Canvas] API. Change `GameView` like so:
       setStrokeColor(0xFFFFFFFF).setStrokeWidth(2).strokeCircle(hsize, hsize, hsize-1);
     canvas.setFillColor(0xFFFFFFFF).fillCircle(size+hsize, hsize, hsize).
       setStrokeColor(0xFF000000).setStrokeWidth(2).strokeCircle(size+hsize, hsize, hsize-1);
+
     // convert the image to a texture and extract a texture region (tile) for each piece
-    Texture ptex = canvas.toTexture();
+    Texture ptex = canvas.toTexture(Texture.Config.UNMANAGED);
     ptiles[Piece.BLACK.ordinal()] = ptex.tile(0, 0, size, size);
     ptiles[Piece.WHITE.ordinal()] = ptex.tile(size, 0, size, size);
+
+    // dispose our pieces texture when this layer is disposed
+    onDisposed(ptex.disposeSlot());
+  }
+
+  @Override public void close () {
+    super.close();
+    ptiles[0].texture().close(); // both ptiles reference the same texture
   }
 ```
 
@@ -263,31 +280,48 @@ makes it simple to treat the region for each piece separately.
 
 We do the actual piece drawing using the [Canvas] API. A piece is just a filled circle with a
 stroked outline. Then we turn the canvas's [Image] \(which is a CPU memory bitmap) into a [Texture]
-\(which is a GPU memory bitmap) via `toTexture`. Note that `toTexture` also disposes the [Canvas]
-which is what we want because we don't need the canvas any longer. Then we obtain our [Tile]s.
+\(which is a GPU memory bitmap) via `toTexture`. Note that `toTexture` also disposes the [Canvas],
+which is what we want because we don't need the canvas any longer. This frees up resources sooner
+than if we just waited for the `Canvas` to be garbage collected. Finally we obtain our [Tile]s.
 
-Note that we make our piece images a bit smaller than the cell size, so that they don't overlap the
-grid lines or bump right up next to them. It looks a bit nicer. To avoid having to do a bunch of
-fiddly math, we position our pieces based on the center of a cell, as we'll see in a moment. We
-align the center of the piece to the center of the cell, so it doesn't matter if the piece is the
-same size as the cell, or smaller, or bigger, it will always line up properly.
+The texture for the pieces is `UNMANAGED` (see the [section on managed
+textures](overview.html#texture-and-tile) in the overview). This is because we want the texture's
+lifetime to correspond to the lifetime of `GameView`, not the lifetime of the layers that will
+actually display the texture. If you have a texture which is no longer needed after the layers
+which display it are disposed, you can use a managed texture; the layers will use reference
+counting to ensure that the texture is disposed when the last layer which is using it is disposed.
+In this case, we're going to use our piece texture in many image layers and there will be times
+when we dispose all of our image layers before creating any new ones (which would trigger the
+disposal of a managed texture). We don't want our piece texture to be disposed at that time; we
+want to keep it until the whole `GameView` is disposed. Thus we make it unmanaged and manually
+dispose it.
+
+The piece images are a bit smaller than the cell size so that they don't overlap the grid lines or
+bump right up next to them; it looks a bit nicer. To avoid having to do a bunch of fiddly math, we
+position our pieces based on the center of a cell, as we'll see below. We align the center of the
+piece to the center of the cell, so it doesn't matter if the piece is the same size as the cell, or
+smaller, or bigger, it will always line up properly.
 
 We could have made the texture the full size of the cell and just drawn a smaller circle inside it,
 but rendering blank pixels is just as expensive as rendering filled pixels, so it would lower
 rendering performance. That doesn't matter in this simple game, but we're trying to set a good
 example.
 
-Now we can create an [ImageLayer] for each piece using our piece tiles. Create two new methods in
+Now we can create an [ImageLayer] for each piece using our piece tiles. Create three new methods in
 `GameView`:
 
 ```java
+  private ImageLayer addPiece (Coord at, Piece piece) {
+    ImageLayer pview = new ImageLayer(ptiles[piece.ordinal()]);
+    pview.setOrigin(Layer.Origin.CENTER);
+    pgroup.addAt(pview, bview.cell(at.x), bview.cell(at.y));
+    return pview;
+  }
+
   private void setPiece (Coord at, Piece piece) {
     ImageLayer pview = pviews.get(at);
     if (pview == null) {
-      pview = new ImageLayer(ptiles[piece.ordinal()]);
-      pview.setOrigin(pview.width()/2, pview.height()/2);
-      addAt(pview, bview.cell(at.x) + bview.tx(), bview.cell(at.y) + bview.ty());
-      pviews.put(at, pview);
+      pviews.put(at, addPiece(at, piece));
     } else {
       pview.setTile(ptiles[piece.ordinal()]);
     }
@@ -299,10 +333,18 @@ Now we can create an [ImageLayer] for each piece using our piece tiles. Create t
   }
 ```
 
-`setPiece` will add a new piece to the board, or update an existing piece. In Reversi, we flip
-pieces over, so this will handle changing a piece from black to white or vice versa. `clearPiece`
-will remove a piece from the board. Pieces are never removed in a Reversi game, but this method
-will be used when we restart the game and remove all the pieces from the previous game.
+`addPiece` creates an [ImageLayer] to display a particular piece, positions it properly and adds it
+to the scene graph. `setPiece` will add a new piece to the board, or update an existing piece. In
+Reversi, we flip pieces over, so this will handle changing a piece from black to white or vice
+versa. `clearPiece` will remove a piece from the board. Pieces are never removed in a Reversi game,
+but this method will be used when we restart the game and remove all the pieces from the previous
+game.
+
+The `Layer.close()` method removes the layer from its parent and disposes any resources used by
+that layer. In this case our piece layers contain non-managed textures, so the reference counting
+they do on the underlying texture won't have any effect. But if we had a layer that contained a
+managed texture for which it was the sole user, when that layer was disposed (via `close`) it would
+in turn dispose its texture, which can often simplify texture memory management.
 
 In `setPiece` we use `setOrigin` on the `ImageLayer` to indicate that we want to position the layer
 based on its center rather than its upper left (which is the default). We then ask the `BoardView`
@@ -318,12 +360,8 @@ for the center of the desired grid cell (`bview.cell`), which is a method we'll 
   }
 ```
 
-Note that we adjust the cell position by the current translation of `bview` (i.e. `bview.cell(at.x)
-+ bview.tx()`). The `BoardView` returns its local coordinates, but we are adding the piece layer
-directly to the `GameView`, so we need the coordinates to be in its coordinate system. We could
-instead put `BoardView` and the piece layers into another `GroupLayer` which was positioned where
-`BoardView` is now, then the pieces would share the same coordinate system as the board view, but
-we won't really need to do this coordinate system fiddling anywhere else, so this is simpler.
+Recall that we positioned `pgroup` and `bview` at the same location, so the local coordinate
+returned by `cell` is just what we need to position the piece layer inside `pgroup`.
 
 The last bit of wiring we need is to react to the addition of pieces to the `Reversi.pieces` map
 and create or update views for those pieces. Add the following to the end of the `GameView`
@@ -354,48 +392,751 @@ game state. We need to add a method to `Reversi` to do that and then call it.
   }
 
   /** Clears the board and sets the 2x2 set of starting pieces in the middle. */
-  public void reset () {
+  private void reset () {
     pieces.clear();
     int half = boardSize/2;
     pieces.put(new Coord(half-1, half-1), Piece.WHITE);
     pieces.put(new Coord(half  , half-1), Piece.BLACK);
     pieces.put(new Coord(half-1, half  ), Piece.BLACK);
     pieces.put(new Coord(half  , half  ), Piece.WHITE);
-    turn.update(Piece.BLACK);
+    turn.updateForce(Piece.BLACK);
   }
 ```
 
 Because we call `reset` *after* we create our `GameView`, the game view will already be listening
 to the `pieces` map and be ready to hear about the pieces as they're added to the reactive map.
-With that call in place, we can run the game and we should see pieces:
+
+Note that we use `updateForce` to update the turn in `reset`. This is because the turn might
+currently *be* `BLACK`, and when a reactive value is updated with the same value, it normally
+ignores it. But we want to force the value to notify its listeners regardless because this is the
+start of a new game and we don't want a stale value left over from a previous game to influence it.
+
+Now we can run the game and we should see pieces:
 
 ![Reversi board with pieces](reversi-drawing-pieces.png)
 
-Now we're ready to start working on game logic and user input.
+Now we're ready to start working on game logic and flow.
 
 You can see the code up to this point by looking at the
-[drawing-pieces](https://github.com/playn/reversi-tutorial#TODO) branch.
+[drawing-pieces](https://github.com/playn/reversi-tutorial/tree/drawing-pieces/core/src/main/java/reversi/core)
+branch.
+
+## Logic and Game Flow
+
+Before we handle user input, it will be useful to have the main game logic in place. So let's sort
+that out. I'm not going to go into detail on the algorithm we use to process Reversi logic since
+this tutorial is teaching you how to use PlayN, not how to implement the game of Reversi. We're
+just going to do the simplest possible thing that works.
+
+Create a `Logic.java` class with the following code:
+
+```java
+package reversi.core;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import reversi.core.Reversi.Coord;
+import reversi.core.Reversi.Piece;
+
+/** "Does the math" for Reversi. */
+public class Logic {
+  public final int boardSize;
+
+  public Logic (int boardSize) {
+    this.boardSize = boardSize;
+  }
+
+  /** Returns true if the specified player can play a piece at the specified coordinate. */
+  public boolean isLegalPlay (Map<Coord,Piece> board, Piece color, Coord coord) {
+    if (!inBounds(coord.x, coord.y) || board.containsKey(coord)) return false;
+
+    // look in each direction from this piece; if we see the other piece color and then one of our
+    // own, then this is a legal move
+    for (int ii = 0; ii < DX.length; ii++) {
+      boolean sawOther = false;
+      int x = coord.x, y = coord.y;
+      for (int dd = 0; dd < boardSize; dd++) {
+        x += DX[ii];
+        y += DY[ii];
+        if (!inBounds(x, y)) break; // stop when we end up off the board
+        Piece piece = board.get(new Coord(x, y));
+        if (piece == null) break;
+        else if (piece != color) sawOther = true;
+        else if (sawOther) return true;
+        else break;
+      }
+    }
+
+    return false;
+  }
+
+  /** Applies the specified play (caller must have already checked its legality).
+    * Flips pieces as appropriate. */
+  public void applyPlay (Map<Coord,Piece> board, Piece color, Coord coord) {
+    List<Coord> toFlip = new ArrayList<>();
+    // place this piece into the game state
+    board.put(coord, color);
+    // determine where this piece captures other pieces
+    for (int ii = 0; ii < DX.length; ii++) {
+      // look in this direction for captured pieces
+      int x = coord.x, y = coord.y;
+      for (int dd = 0; dd < boardSize; dd++) {
+        x += DX[ii];
+        y += DY[ii];
+        if (!inBounds(x, y)) break; // stop when we end up off the board
+        Coord fc = new Coord(x, y);
+        Piece piece = board.get(fc);
+        if (piece == null) break;
+        else if (piece != color) toFlip.add(fc);
+        else { // piece == color
+          for (Coord tf : toFlip) board.put(tf, color); // flip it!
+          break;
+        }
+      }
+      toFlip.clear();
+    }
+  }
+
+  /** Returns all legal plays for the player with the specified color. */
+  public List<Coord> legalPlays (Map<Coord,Piece> board, Piece color) {
+    List<Coord> plays = new ArrayList<>();
+    // search every board position for a legal move; the force, it's so brute!
+    for (int yy = 0; yy < boardSize; yy++) {
+      for (int xx = 0; xx < boardSize; xx++) {
+        Coord coord = new Coord(xx, yy);
+        if (board.containsKey(coord)) continue;
+        if (isLegalPlay(board, color, coord)) plays.add(coord);
+      }
+    }
+    return plays;
+  }
+
+  private final boolean inBounds (int x, int y) {
+    return (x >= 0) && (x < boardSize) && (y >= 0) && (y < boardSize);
+  }
+
+  protected static final int[] DX = { -1,  0,  1, -1, 1, -1, 0, 1 };
+  protected static final int[] DY = { -1, -1, -1,  0, 0,  1, 1, 1 };
+}
+```
+
+Then create a logic instance in `Reversi.java`:
+
+```java
+  public final int boardSize = 8;
+  // ...
+  public final Logic logic = new Logic(boardSize);
+```
+
+Now we need to implement turn handling. When it is a particular player's turn, we're going to
+display all of their legal moves as partially transparent pieces. The player will click on one of
+the partially transparent pieces to make their move and we'll process it and switch to the next
+player's turn. If the other player has no moves then we end the game.
+
+Let's start by adding a method to `GameView` to display potential moves.
+
+```java
+  public void showPlays (List<Coord> coords, Piece color) {
+    final List<ImageLayer> plays = new ArrayList<>();
+    for (Coord coord : coords) {
+      ImageLayer pview = addPiece(coord, color);
+      pview.setAlpha(0.3f);
+      // TODO: listen for a click on pview and make that move
+      plays.add(pview);
+    }
+  }
+```
+
+We'll leave the input handling for the [Input section](#input). Next let's wire up some logic in
+`Reversi` which processes a turn:
+
+```java
+  public static enum Piece {
+    BLACK, WHITE;
+    public Piece next () { return values()[(ordinal()+1) % values().length]; }
+  }
+
+  public Reversi (Platform plat) {
+    // ...
+
+    // create and add a game view
+    final GameView gview = new GameView(this, size);
+    rootLayer.add(gview);
+
+    // wire up a turn handler
+    turn.connect(new Slot<Piece>() {
+      private boolean lastPlayerPassed = false;
+      @Override public void onEmit (Piece color) {
+        List<Coord> plays = logic.legalPlays(pieces, color);
+        if (!plays.isEmpty()) {
+          lastPlayerPassed = false;
+          gview.showPlays(plays, color);
+        } else if (lastPlayerPassed) {
+          endGame();
+        } else {
+          lastPlayerPassed = true;
+          turn.update(color.next());
+        }
+      }
+    });
+
+    // start the game
+    reset();
+  }
+
+  private void endGame () {
+    // TODO
+  }
+```
+
+This listens for changes to the `turn` reactive value. When it changes, it computes the legal moves
+for the current turn holder and displays them in the game view. If a player has no legal moves,
+play passes back to the other player. If both players have no legal moves, the game ends. We'll
+handle ending the game later.
+
+With all that in place, we can run the game now and should see the legal moves for the black player
+(who starts the game):
+
+![Reversi board with potential plays](reversi-logic-plays.png)
+
+Now we can start wiring up user input.
+
+You can see the code up to this point by looking at the
+[logic](https://github.com/playn/reversi-tutorial/tree/logic/core/src/main/java/reversi/core)
+branch.
 
 ## Input
 
-## Logic
+PlayN supports both [Mouse] and [Touch] input, as well as a unified input abstraction called
+[Pointer], which provides a simple input model that can be fulfilled by either mouse or touch
+input. [Pointer] is useful in that you can support both kinds of input without extra effort. You
+can also augment a pointer-based UI with extra information from mouse or touch input as desired,
+which we'll demonstrate here.
 
-## Game flow
+PlayN dispatches global input events which know nothing about the scene graph and layers, but the
+[playn-scene] library builds on that input support to provide event dispatch on a per-layer basis.
+It takes care of hit testing layers to determine which one is hit by a particular input interaction
+and dispatching events to handlers registered on that layer. This mechanism is described in more
+detail in the overview section on [layer input](overview.html#layer-input-and-hit-testing).
+
+The first thing we need to do to handle user input is to wire up dispatchers which deliver events
+to the appropriate layers. We'll do that in the `Reversi` constructor:
+
+```java
+  public final Pointer pointer;
+
+  public Reversi (Platform plat) {
+    super(plat, 33); // update our "simulation" 33ms (30 times per second)
+
+    // wire up pointer and mouse event dispatch
+    pointer = new Pointer(plat, rootLayer, false);
+    plat.input().mouseEvents.connect(new Mouse.Dispatcher(rootLayer, false));
+
+    // ...
+  }
+```
+
+Note that these are the `playn.scene.Pointer` and `playn.scene.Mouse` classes. Those extend the
+`playn.core.Pointer` and `playn.core.Mouse` classes so that you can continue to refer to the event
+classes as `Pointer.Event` and `Mouse.Event` without additional imports.
+
+With those event dispatchers wired up, we can now register event listeners on layers and we'll be
+notified of events. Just add a pointer listener to our potential play layers and BAM! we have a
+nearly working game. Change `GameView.showPlays` thusly:
+
+```java
+  public void showPlays (List<Coord> coords, final Piece color) {
+    final List<ImageLayer> plays = new ArrayList<>();
+    for (final Coord coord : coords) {
+      ImageLayer pview = addPiece(coord, color);
+      pview.setAlpha(0.3f);
+      // when the player clicks on a potential play, commit that play as their move
+      pview.events().connect(new Pointer.Listener() {
+        @Override public void onStart (Pointer.Interaction iact) {
+          // clear out the potential plays layers
+          for (ImageLayer play : plays) play.close();
+          // apply this play to the game state
+          game.logic.applyPlay(game.pieces, color, coord);
+          // and move to the next player's turn
+          game.turn.update(Logic.opposite(color));
+        }
+      });
+      plays.add(pview);
+    }
+  }
+```
+
+While we're fiddling with that code, let's use the `Mouse` dispatcher we wired up to give some
+feedback when the player hovers the mouse over a potential play. This won't do anything on
+touch-only platforms, but it's nice to give extra feedback when and where we can.
+
+```java
+      // when the player hovers over a potential play, highlight it
+      pview.events().connect(new Mouse.Listener() {
+        @Override public void onHover (Mouse.HoverEvent event, Mouse.Interaction iact) {
+          iact.hitLayer.setAlpha(event.inside ? 0.6f : 0.3f);
+        }
+      });
+```
+
+Now when you hover the mouse over a potential play, it becomes slightly less ghostly. Note that we
+use `iact.hitLayer` inside the event listener. That contains a reference to the layer that was
+"hit" by the interaction in question. In this case, it's the layer that's being hovered over. We
+could have just made `pview` final and used that in the event listener, but with this approach we
+could reuse the same hover event listener on multiple layers if we so desired.
+
+We're in the home stretch gameplay-wise, so let's now handle ending the game when no moves remain
+for either player. We'll display a message indicating who won, and allow the game to be restarted
+with a click. Fill in `Reversi.endGame`:
+
+```java
+  private void endGame () {
+    // count up the pieces for each color
+    Piece[] ps = Piece.values();
+    int[] count = new int[ps.length];
+    for (Piece p : pieces.values()) count[p.ordinal()]++;
+
+    // figure out who won
+    List<Piece> winners = new ArrayList<>();
+    int highScore = 0;
+    for (int ii = 0; ii < count.length; ii++) {
+      int score = count[ii];
+      if (score == highScore) winners.add(ps[ii]);
+      else if (score > highScore) {
+        winners.clear();
+        winners.add(ps[ii]);
+        highScore = score;
+      }
+    }
+
+    // if we have only one winner, they win; otherwise it's a tie
+    StringBuilder msg = new StringBuilder();
+    if (winners.size() == 1) msg.append(winners.get(0)).append(" wins!");
+    else {
+      for (Piece p : winners) {
+        if (msg.length() > 0) msg.append(" and ");
+        msg.append(p);
+      }
+      msg.append(" tie.");
+    }
+    msg.append("\nClick to play again.");
+
+    // render the game over message and display it in a layer
+    IDimension vsize = plat.graphics().viewSize;
+    TextBlock block = new TextBlock(plat.graphics().layoutText(
+      msg.toString(), new TextFormat(new Font("Helvetica", Font.Style.BOLD, 48)),
+      new TextWrap(vsize.width()-20)));
+    Canvas canvas = plat.graphics().createCanvas(block.bounds.width()+4, block.bounds.height()+4);
+    canvas.setFillColor(0xFF0000FF).setStrokeColor(0xFFFFFFFF).setStrokeWidth(4f);
+    block.stroke(canvas, TextBlock.Align.CENTER, 2, 2);
+    block.fill(canvas, TextBlock.Align.CENTER, 2, 2);
+    final ImageLayer layer = new ImageLayer(canvas.toTexture());
+    rootLayer.addFloorAt(layer, (vsize.width()-canvas.width)/2, (vsize.height()-canvas.height)/2);
+
+    // when the player clicks anywhere, restart the game
+    pointer.events.connect(new Slot<Pointer.Event>() {
+      @Override public void onEmit (Pointer.Event event) {
+        if (event.kind.isStart) {
+          layer.close();
+          reset();
+          pointer.events.disconnect(this);
+        }
+      }
+    });
+  }
+```
+
+We figure out who one (or if the game was a tie), and create a message to be displayed to convey
+that to the user. We use [Graphics].`layoutText` to format the message using the platform's
+built-in font rendering facilities. We then use [TextBlock] to render that message into a [Canvas]
+with `CENTER` alignment. The text is rendered with an outline, which is why we first stroke it and
+then fill the same text over top of the stroke. That ensures that the message contrasts against
+whatever black or white pieces it's drawn over.
+
+Finally, we connect a global [Pointer].`events` listener that waits for a pointer start event and
+then triggers a game restart. We use a global listener here instead of listening on a particular
+layer because we want the user to be able to click anywhere to restart the game.
+
+That's it, now you can play a full game of Reversi! When you finish your game, you should see
+something like this:
+
+![Reversi game over display](reversi-game-over.png)
+
+It's not the most stunning graphic design, but that's what you get when you let programmers run
+wild.
+
+You can see the code up to this point by looking at the
+[input](https://github.com/playn/reversi-tutorial/tree/input/core/src/main/java/reversi/core)
+branch.
 
 ## Audio
 
+Let's play a simple sound effect when a piece is placed on the board. Download the "Release Click"
+MP3 from [this website](http://www.adobeflash.com/download/sounds/clicks/) (or pick one that you
+like better).
 
+Now put that sound into your project as:
 
-[Canvas]: http://playn.github.io/docs/api/scene/playn/scene/Canvas.html
+```
+assets/src/main/resources/assets/sounds/click.mp3
+```
+
+You'll have to create the `sounds` directory as it doesn't exist by default.
+
+Playing the sound is quite simple. Just modify `GameView.java` like so:
+
+```java
+
+  private final Sound click;
+
+  public GameView (Reversi game, IDimension viewSize) {
+    // ...
+    this.click = game.plat.assets().getSound("sounds/click");
+    // ...
+  }
+
+  // in showPlays()
+    // ...
+    game.logic.applyPlay(game.pieces, color, coord);
+    click.play();
+    // ...
+```
+
+Notice that we don't supply the `.mp3` suffix when loading the sound. All backends support the
+`MP3` format, but some backends (like iOS with `CAFF`) have other formats that are recommended for
+better performance. Thus each platform will look for sounds in its preferred format before falling
+back to `.mp3`. This allows you to convert your sounds during your build process, or ahead of time,
+and to bundle the appropriate versions of your sounds with the particular backend for which you're
+building.
+
+You can see the code up to this point by looking at the
+[audio](https://github.com/playn/reversi-tutorial/tree/audio/core/src/main/java/reversi/core)
+branch.
+
+## Bling
+
+We've made a basic Reversi game and covered a bunch of basic PlayN functionality, so our job is
+essentially done. But the game seems a little dull. Let's see if we can't spice things up a bit
+before we call it a day.
+
+PlayN does not ship with classes to do animation or higher level user interface, but there's a
+library which does, called [TriplePlay]. We'll add that to our build and then use its animation
+framework to do some fun stuff.
+
+Edit `reversi/core/pom.xml` and add a TriplePlay dependency:
+
+```xml
+    <dependency>
+      <groupId>com.threerings</groupId>
+      <artifactId>tripleplay</artifactId>
+      <version>${playn.version}</version>
+    </dependency>
+```
+
+TriplePlay is updated on the same version schedule as PlayN, so it's usually a good idea to use
+`${playn.version}` to ensure that you have the version of TriplePlay that's meant for the version
+of PlayN that you're using.
+
+Note that if you plan to build the HTML version of your game, [follow the
+instructions](https://github.com/threerings/tripleplay#gwthtml5) for adding TriplePlay to your
+`html` module as well.
+
+Now we can use the TriplePlay [Animator] class to bring our pieces to life. Add it to
+`Reversi.java`:
+
+```java
+  public final Animator anim;
+
+  public Reversi (Platform plat) {
+    super(plat, 33); // update our "simulation" 33ms (30 times per second)
+
+    // create an animator for some zip zing
+    anim = new Animator(paint);
+    // ..
+  }
+```
+
+We pass it the `paint` signal which is a signal emitted by our game on every frame with a [Clock]
+that contains timing information. The animator uses that to process animations on every frame.
+
+Now we can use the animator to put our pieces onto the board with a bit more flare. Change
+`GameView.java` like so:
+
+```java
+  private void setPiece (Coord at, Piece piece) {
+    ImageLayer pview = pviews.get(at);
+    if (pview == null) {
+      pviews.put(at, pview = addPiece(at, piece));
+      // animate the piece view "falling" into place
+      pview.setVisible(false).setScale(2);
+      game.anim.setVisible(pview, true).then().
+        tweenScale(pview).to(1).in(500).bounceOut();
+      game.anim.delay(250).then().play(click);
+      game.anim.addBarrier();
+
+    } else {
+      pview.setTile(ptiles[piece.ordinal()]);
+    }
+  }
+```
+
+This creates an animation which smoothly scales the piece from 2x to 1x using a `bounceOut`
+interpolator which smoothly transitions to its target value, but then bounces back a bit and cycles
+through a few bounces each decayed from the last. Because we're applying this interpolated value to
+the piece's scale, it makes the piece look like it's dropping down onto the board and bouncing a
+bit when it lands. The graph of the `bounceOut` interpolator looks [like
+this](http://cogitolearning.co.uk/?p=1078#attachment_1151).
+
+We also create an animation which delays a certain amount of time (250ms in this case) and then
+plays our click sound. We want to time the sound with the animation so that the click plays when
+the piece appears to "hit" the board for the first time. We could probably improve this effect by
+finding a click sound that includes a little rattle after the first click, but I'm even worse at
+finding good sounds than I am at drawing good graphics, so I'll leave that as an exercise for the
+reader.
+
+Be sure to remove the `click.play()` call from `showPlays()`. We're now timing the sound to go with
+the animation, so we play it in a different place.
+
+Finally we call `addBarrier` which tells the animator: don't start any new animations until the
+ones that I just queued up are completed. This ensures that even though four `setPiece` calls come
+in in rapid succession when the game first starts, the animations for each of them proceed one
+after another. We'll use `addBarrier` in a few places to make sure that things don't happen until
+we want them to.
+
+This is why we `setVisible(false)` on our layers immediately after getting them from `addPiece`.
+`addPiece` adds the layer to the scene graph, so if we didn't make them invisible, they'd show up
+immediately and sit there looking weird until their animation started. So we make them invisible
+and the first thing the animation does is make them visible again, and then it starts tweening
+their scale.
+
+If you play the game, you'll notice that the potential moves for the next turn show up immediately,
+even before the animation for the current play finishes, so let's fix that.
+
+In `showPlays()` make the following change:
+
+```java
+-      pview.setAlpha(0.3f);
++      // fade the piece in
++      pview.setAlpha(0);
++      game.anim.tweenAlpha(pview).to(0.3f).in(300);
+```
+
+That will cause the potential move pieces to be set to alpha 0 when they are first added, so
+they'll be invisible until their animations start, then we tween their alpha to 0.3f using the
+animator which ensures that they don't fade in until all the piece dropping animations are done.
+
+We don't put an `addBarrier` call here, because we want all the potential move pieces to fade in at
+the same time. In the absence of barriers the [Animator] runs all the animations it knows about in
+parallel.
+
+Now things are looking better, but there's another thing we should fix. When a player makes their
+move, the pieces that are flipped over as a result of that move are flipped immediately, without
+regard to animation scheduling. Let's make those follow the animation schedule and make the flip a
+bit fancier while we're at it.
+
+We'll use a custom [QuadBatch] to render the flipping pieces with a 3D transform that makes them
+look like they're actually flipping over. Explaining the 3D math that underlies this custom quad
+batch is beyond the scope of this tutorial, but if you're into that sort of thing, it's not too
+complicated. The "stock" PlayN shader doesn't do any 3D transformation because it expects you to be
+making a 3D game. This new shader will tweak the stock shader a bit and apply a specific 3D
+transform to the quad being rendered which rotates it along a y-axis-aligned vector with the eye
+(or camera) at a specified screen coordinate location.
+
+Create a new file `FlipBatch.java`:
+
+```java
+package reversi.core;
+
+import playn.core.GL20;
+import playn.core.TriangleBatch;
+
+import tripleplay.shaders.ShaderUtil;
+
+public class FlipBatch extends TriangleBatch {
+
+  /** The angle of rotation. */
+  public float angle;
+
+  /** The current "eye" position in screen coordinates. */
+  public float eyeX, eyeY;
+
+  public FlipBatch (GL20 gl, final float zScale) {
+    super(gl, new Source() { @Override public String vertex () {
+      return FlipBatch.vertex(zScale);
+    }});
+    uAngle = program.getUniformLocation("u_Angle");
+    uEye = program.getUniformLocation("u_Eye");
+  }
+
+  @Override public void begin (float fbufWidth, float fbufHeight, boolean flip) {
+    super.begin(fbufWidth, fbufHeight, flip);
+    program.activate();
+    gl.glUniform1f(uAngle, angle);
+    gl.glUniform2f(uEye, eyeX, eyeY);
+  }
+
+  private final int uAngle, uEye;
+
+  protected static String vertex (float zScale) {
+    return TriangleBatch.Source.VERT_UNIFS +
+      "uniform float u_Angle;\n" +
+      "uniform vec2 u_Eye;\n" +
+      TriangleBatch.Source.VERT_ATTRS +
+      TriangleBatch.Source.PER_VERT_ATTRS +
+      TriangleBatch.Source.VERT_VARS +
+
+      "void main(void) {\n" +
+      // Transform the vertex per the normal screen transform
+      "  mat4 transform = mat4(\n" +
+      "    a_Matrix[0],      a_Matrix[1],      0, 0,\n" +
+      "    a_Matrix[2],      a_Matrix[3],      0, 0,\n" +
+      "    0,                0,                1, 0,\n" +
+      "    a_Translation[0], a_Translation[1], 0, 1);\n" +
+      "  vec4 pos = transform * vec4(a_Position, 0, 1);\n" +
+
+      // Rotate the vertex per our 3D rotation
+      "  float cosa = cos(u_Angle);\n" +
+      "  float sina = sin(u_Angle);\n" +
+      "  mat4 rotmat = mat4(\n" +
+      "    cosa, 0, sina, 0,\n" +
+      "    0,    1, 0,    0,\n" +
+      "   -sina, 0, cosa, 0,\n" +
+      "    0,    0, 0,    1);\n" +
+      "  pos = rotmat * vec4(pos.x - u_Eye.x,\n" +
+      "                      pos.y - u_Eye.y,\n" +
+      "                      0, 1);\n" +
+
+      // Perspective project the vertex back into the plane
+      "  mat4 persp = mat4(\n" +
+      "    1, 0, 0, 0,\n" +
+      "    0, 1, 0, 0,\n" +
+      "    0, 0, 1, -1.0/2000.0,\n" +
+      "    0, 0, 0, 1);\n" +
+      "  pos = persp * pos;\n" +
+      "  pos += vec4(u_Eye.x,\n" +
+      "              u_Eye.y, 0, 0);\n" +
+
+      // Finally convert the coordinates into OpenGL space
+      "  pos.xy /= u_HScreenSize.xy;\n" +
+      "  pos.z  /= (u_HScreenSize.x * " + ShaderUtil.format(zScale) + ");\n" +
+      "  pos.xy -= 1.0;\n" +
+      // z may already be rotated into negative space so we don't shift it
+      "  pos.y  *= u_Flip;\n" +
+      "  gl_Position = pos;\n" +
+
+      TriangleBatch.Source.VERT_SETTEX +
+      TriangleBatch.Source.VERT_SETCOLOR +
+      "}";
+  }
+}
+```
+
+Next we'll create this batch and ensure that it's properly disposed when our `GameView` goes away:
+
+```java
+  private final FlipBatch flip;
+
+  public GameView (Reversi game, IDimension viewSize) {
+    // ...
+    this.flip = new FlipBatch(game.plat.graphics().gl, 2);
+    // ...
+  }
+
+  @Override public void close () {
+    super.close();
+    flip.close();
+  }
+```
+
+The actual flipping happens in `setPiece`, so we'll change that:
+
+```java
+  private void setPiece (Coord at, Piece piece) {
+    ImageLayer pview = pviews.get(at);
+    if (pview == null) {
+      // ..
+
+    } else {
+      final ImageLayer fview = pview;
+      final Tile tile = ptiles[piece.ordinal()];
+      final Point eye = LayerUtil.layerToScreen(pview, fview.width()/2, fview.height()/2);
+      Animation.Value flipAngle = new Animation.Value() {
+        public float initial () { return flip.angle; }
+        public void set (float value) { flip.angle = value; }
+      };
+      game.anim.
+        action(new Runnable() { public void run () {
+          flip.eyeX = eye.x;
+          flip.eyeY = eye.y;
+          fview.setBatch(flip);
+        }}).
+        then().tween(flipAngle).from(0).to(FloatMath.PI/2).in(150).
+        then().action(new Runnable() { public void run () {
+          fview.setTile(tile);
+        }}).
+        then().tween(flipAngle).to(FloatMath.PI).in(150).
+        then().action(new Runnable() { public void run () {
+          fview.setBatch(null);
+        }});
+      game.anim.addBarrier();
+    }
+  }
+```
+
+There's a lot going on here, so let's break it down. First we figure out the screen coordinates for
+the center of the piece that we'll be flipping. We also create an `Animation.Value` to wrap the
+`angle` exposed by `FlipBatch. This allows a tween animation to change that value as an animation
+progresses.
+
+Then we create our animation sequence. The first thing we do is to use an `action` to configure the
+eye on the `FlipBatch` and configure the [ImageLayer] displaying our potential move with the
+`FlipBatch`. Then we `tween` the flip angle from 0 to PI/2, which rotates the layer to the halfway
+point, then we use another action to switch the tile displayed by the [ImageLayer] from the old
+color to the new color, then we tween the angle the rest of the way (PI/2 to PI). Finally we clear
+out the batch, and add a barrier so that each of these animations procedes one after another.
+
+In this case, it's essential that we run these animations serially. If we tried to run multiple
+flip animations in parallel, the code that changes `FlipBatch.eyeX` and `eyeY` would all run at the
+same time and only the last layer's values would be used for all of the layers. This would make
+things look weird for all the layers except the last one. If we wanted to run all the flips in
+parallel, we'd have to write the `FlipBatch` differently so that the `eye` position was part of
+each quad's data. That wouldn't be super hard, but it would complicate things quite a bit.
+
+You can see the code up to this point by looking at the
+[bling](https://github.com/playn/reversi-tutorial/tree/bling/core/src/main/java/reversi/core)
+branch.
+
+## Conclusion
+
+Now we have a Reversi game that, programmer art aside, we could show to our friends without feeling
+too embarrassed. There are certainly many more things you could do to improve it, and now that you
+have an idea how PlayN's main APIs work, perhaps you will.
+
+The [docs](index.html) are there when you need to look things up. Now go forth and make awesome
+games!
+
+[Animator]: http://threerings.github.io/tripleplay/apidocs/tripleplay/anim/Animator.html
+[Canvas]: http://playn.github.io/docs/api/core/playn/core/Canvas.html
+[Clock]: http://playn.github.io/docs/api/core/playn/core/Clock.html
+[Graphics]: http://playn.github.io/docs/api/core/playn/core/Graphics.html
 [GroupLayer]: http://playn.github.io/docs/api/scene/playn/scene/GroupLayer.html
 [ImageLayer]: http://playn.github.io/docs/api/scene/playn/scene/ImageLayer.html
 [Image]: http://playn.github.io/docs/api/core/playn/core/Image.html
 [Layer]: http://playn.github.io/docs/api/scene/playn/scene/Layer.html
+[Mouse]: http://playn.github.io/docs/api/core/playn/core/Mouse.html
+[Pointer]: http://playn.github.io/docs/api/core/playn/core/Pointer.html
+[QuadBatch]: http://playn.github.io/docs/api/core/playn/core/QuadBatch.html
 [RMap]: http://threerings.github.io/react/apidocs/react/RMap.html
 [React]: https://github.com/threerings/react
 [Reversi tutorial]: https://github.com/playn/reversi-tutorial
 [Reversi]: http://en.wikipedia.org/wiki/Reversi
 [Surface]: http://playn.github.io/docs/api/core/playn/core/Surface.html
+[TextBlock]: http://playn.github.io/docs/api/core/playn/core/TextBlock.html
 [Texture]: http://playn.github.io/docs/api/core/playn/core/Texture.html
 [Tile]: http://playn.github.io/docs/api/core/playn/core/Tile.html
+[Touch]: http://playn.github.io/docs/api/core/playn/core/Touch.html
+[TriplePlay]: https://github.com/threerings/tripleplay
 [Value]: http://threerings.github.io/react/apidocs/react/Value.html
+[playn-scene]: http://playn.github.io/docs/api/scene/
