@@ -76,11 +76,11 @@ When you click the mouse in the window, a little pea (which may or may not be sp
 appear.
 
 If you see the window and a pea, then you're done! You've just built and run your first PlayN game.
-Now go do the [tutorial](tutorial.html) or start working on your own game and don't worry about any
-of the other backends until you're sure PlayN is the library you want to use. Getting those working
-will involve more annoying steps and not much fun. I guarantee that it will eventually work, so
-don't waste your time on it until you're sure you need to do it. You don't need to "make sure it
-works" right now. It does.
+Now go do the [tutorials](index.html#tutorials) or start working on your own game and don't worry
+about any of the other backends until you're sure PlayN is the library you want to use. Getting
+those working will involve more annoying steps and not much fun. I guarantee that it will
+eventually work, so don't waste your time on it until you're sure you need to do it. You don't need
+to "make sure it works" right now. It does.
 
 ### Android backend
 

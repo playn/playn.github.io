@@ -12,6 +12,7 @@ into the [tutorials](#tutorials) and build a game.
 * Javadocs: [core](api/core/),  [scene](api/scene/)
 * [Release notes](release/notes.html)
 * [Source code](http://github.com/playn/playn)
+* Create a [game project](skeleton.html)
 
 ## Tutorials
 

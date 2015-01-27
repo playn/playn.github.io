@@ -204,7 +204,7 @@ cd <your-new-game-directory>
 mvn test -Pjava
 ```
 
-If you are doing this in preparation for the tutorial, [head back there](tutorial.html) and get
+If you are doing this in preparation for a tutorial, [head back there](index.html#tutorials) and get
 going. Otherwise good luck with your exciting new game!
 
 [Android manifest docs]: https://developer.android.com/guide/topics/manifest/manifest-intro.html

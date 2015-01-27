@@ -6,7 +6,7 @@ layout: docs
 
 Here we describe the major components of the PlayN library and how they fit together. This is a
 conceptual introduction, so we don't show a lot of code. For code, see the
-[tutorial](tutorial.html) and the [cookbook](/cookbook/).
+[tutorials](index.html#tutorials) and the [cookbook](/cookbook/).
 
 Overview of the overview:
 
