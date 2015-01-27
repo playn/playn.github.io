@@ -1117,6 +1117,26 @@ have an idea how PlayN's main APIs work, perhaps you will.
 The [docs](index.html) are there when you need to look things up. Now go forth and make awesome
 games!
 
+**Addendum**: the tutorial is complete and I pushed all the code to Github, and then I discovered
+an annoying bug. Rather than rewrite history, I'm just going to own up to it here and show you how
+to fix it. The bug is that even though we set the alpha for possible move pieces to zero before we
+fade them in, if you hover over them while they're at zero alpha, they'll immediately become
+visible, which looks weird given that they shouldn't really exist yet.
+
+This is easy to fix, just use the same `setVisible` approach that we did with the other pieces that
+we didn't want to show up until they were ready. This is also more efficient because a layer with
+alpha of 0 is still rendered, even though we draw a bunch of transparent pixels that don't end up
+changing the frame buffer. But a layer with visibility set to false is not drawn at all.
+
+So change `GameView.java` like so:
+
+```java
+-      pview.setAlpha(0);
+-      game.anim.tweenAlpha(pview).to(0.3f).in(300);
++      pview.setVisible(false).setAlpha(0);
++      game.anim.setVisible(pview, true).then().tweenAlpha(pview).to(0.3f).in(300);
+```
+
 [Animator]: http://threerings.github.io/tripleplay/apidocs/tripleplay/anim/Animator.html
 [Canvas]: http://playn.github.io/docs/api/core/playn/core/Canvas.html
 [Clock]: http://playn.github.io/docs/api/core/playn/core/Clock.html
