@@ -30,9 +30,11 @@ you have your [development environment](setup.html) set up properly, and they sh
 useful things with the library.
 
 * [Hello] - the PlayN equivalent of Hello World
+* [Physics] - demonstrates JBox2D integration
 * [Cute] - draws an environment and a character walking around therein
-* [Showcase] - shows a bunch of different things, including JBox2D integration
+* [Showcase] - shows a bunch of different things
 
-[Hello]: http://github.com/playn/playn-samples/tree/master/hello
 [Cute]: http://github.com/playn/playn-samples/tree/master/cute
+[Hello]: http://github.com/playn/playn-samples/tree/master/hello
+[Physics]: http://github.com/playn/playn-samples/tree/master/physics
 [Showcase]: http://github.com/playn/playn-samples/tree/master/showcase
