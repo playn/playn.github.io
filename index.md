@@ -42,7 +42,7 @@ PlayN is free and open source, released under the Apache 2.0 license.
 ## Code
 
 * Get the PlayN [source code](http://github.com/playn/playn) on Github
-* Read the [release notes](docs/release_notes.html)
+* Read the [release notes](docs/release/notes.html)
 
 [2D scene graph]: docs/overview.html#scene-graph
 [OpenGL]: docs/overview.html#opengl
