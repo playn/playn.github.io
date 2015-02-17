@@ -216,7 +216,7 @@ for all the pieces. We'll start by just putting the `BoardView` in it:
 public class GameView extends GroupLayer {
   private final Reversi game;
   private final BoardView bview;
-  private final GroupLayer pgroup = new GroupLayer();
+  private final GroupLayer pgroup = new GroupLayer(); // Layer for pieces
 
   public GameView (Reversi game, IDimension viewSize) {
     this.game = game;
