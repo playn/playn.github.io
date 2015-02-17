@@ -308,10 +308,13 @@ but rendering blank pixels is just as expensive as rendering filled pixels, so i
 rendering performance. That doesn't matter in this simple game, but we're trying to set a good
 example.
 
-Now we can create an [ImageLayer] for each piece using our piece tiles. Create three new methods in
-`GameView`:
+Now we can create an [ImageLayer] for each piece using our piece tiles.
+
+Add to `GameView` a map to track the layer for each piece on the board, and three new methods:
 
 ```java
+  private final Map<Coord, ImageLayer> pviews = new HashMap<>();
+
   private ImageLayer addPiece (Coord at, Piece piece) {
     ImageLayer pview = new ImageLayer(ptiles[piece.ordinal()]);
     pview.setOrigin(Layer.Origin.CENTER);
@@ -332,12 +335,6 @@ Now we can create an [ImageLayer] for each piece using our piece tiles. Create t
     ImageLayer pview = pviews.remove(at);
     if (pview != null) pview.close();
   }
-```
-
-Also declare the map that stores the pieces image layers in the class `GameView`:
-
-```java
-  private final Map<Coord, ImageLayer> pviews = new HashMap<>();
 ```
 
 `addPiece` creates an [ImageLayer] to display a particular piece, positions it properly and adds it
