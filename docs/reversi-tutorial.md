@@ -334,6 +334,12 @@ Now we can create an [ImageLayer] for each piece using our piece tiles. Create t
   }
 ```
 
+Also declare the map that stores the pieces image layers in the class `GameView`:
+
+```java
+  private final Map<Coord, ImageLayer> pviews = new HashMap<>();
+```
+
 `addPiece` creates an [ImageLayer] to display a particular piece, positions it properly and adds it
 to the scene graph. `setPiece` will add a new piece to the board, or update an existing piece. In
 Reversi, we flip pieces over, so this will handle changing a piece from black to white or vice
