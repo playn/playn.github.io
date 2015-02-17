@@ -17,7 +17,7 @@ every tiny detail here.
 Before we get started, you need to do two important things:
 
 * Set up your [development environment](setup.html)
-* Create a [skeleton game](skeleton.html)
+* Create a [skeleton game](skeleton.html) with the command ```mvn archetype:generate -DarchetypeGroupId=io.playn -DarchetypeArtifactId=playn-archetype -DarchetypeVersion=2.0```
 
 For the second step, this tutorial will assume that you used the following configuration when
 creating your skeleton game:
