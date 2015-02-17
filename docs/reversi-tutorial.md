@@ -24,6 +24,7 @@ creating your skeleton game:
 
 * `groupId` - `io.playn.tutorial`
 * `artifactId` - `reversi`
+* `version` - `1.0-SNAPSHOT`
 * `package` - `reversi`
 * `JavaGameClassName` - `Reversi`
 
