@@ -212,7 +212,7 @@ contain the board as well as the pieces on top of it. The game view will be a [G
 is a layer that contains children. It will contain the `BoardView` layer, as well as [ImageLayer]s
 for all the pieces. We'll start by just putting the `BoardView` in it:
 
-```
+```java
 public class GameView extends GroupLayer {
   private final Reversi game;
   private final BoardView bview;
@@ -229,7 +229,7 @@ public class GameView extends GroupLayer {
 
 and change `Reversi.java` thusly:
 
-```
+```java
 -    // create and add a board view
 -    rootLayer.addCenterAt(new BoardView(this, size), size.width()/2, size.height()/2);
 +    // create and add a game view
