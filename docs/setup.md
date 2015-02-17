@@ -51,9 +51,11 @@ Once you have Maven installed, you'll also need [Git] installed so that you can 
 games to ensure that your setup is working. You can use a GUI git client or a command line client,
 it doesn't matter.
 
-### Locally install playn
+### Locally install PlayN
 
-You might want to install a local copy of playn:
+Currently PlayN 2.0 is not yet shipped to Maven Central, so you need to install it locally to use
+it:
+
 ```
 git clone git@github.com:playn/playn.git
 cd playn
