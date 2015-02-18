@@ -664,7 +664,7 @@ nearly working game. Change `GameView.showPlays` thusly:
           // apply this play to the game state
           game.logic.applyPlay(game.pieces, color, coord);
           // and move to the next player's turn
-          game.turn.update(Logic.opposite(color));
+          game.turn.update(color.next());
         }
       });
       plays.add(pview);
