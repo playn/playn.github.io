@@ -138,11 +138,8 @@ properly configured according to a small amount of information provided by you u
 To generate a new PlayN game project using Maven, run the following command:
 
 ```
-mvn archetype:generate -DarchetypeGroupId=io.playn -DarchetypeArtifactId=playn-archetype -DarchetypeVersion=2.0
+mvn archetype:generate -DarchetypeGroupId=io.playn -DarchetypeArtifactId=playn-archetype -DarchetypeVersion=2.0-rc1
 ```
-
-At the moment version 2.0 is not yet published to Maven Central. If you have installed a local
-version of PlayN, you can use the archetype ```Version=2.0-SNAPSHOT```.
 
 This will ask you to provide various metadata for your project. These are explained in turn:
 
