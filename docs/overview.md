@@ -76,7 +76,7 @@ class does this job.
 One design choice made by PlayN is to assume that every quad should have a full affine
 transformation accompanying it. This allows a bunch of arbitrarily transformed quads to be drawn in
 a single batch (assuming they reference the same texture). This requires six floats per quad, where
-a "scale and translation"-only approach might only need two, but we think this is better for the
+a "scale and translation"-only approach might only need three, but we think this is better for the
 general case. If you need maximum performance and are drawing a zillion unrotated, unsheared quads,
 then you can pretty easily write your own QuadBatch to do it.
 
