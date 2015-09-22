@@ -24,13 +24,14 @@ public class YourGame extends SceneGame {
 
   public void saveScreenshot () {
     // figure out how big the viewport is in pixels (we may be on a HiDPI display)
-    Scale scale = plat.graphics().scale();
-    IDimension size = plat.graphics().viewSize;
+    Graphics gfx = plat.graphics();
+    Scale scale = gfx.scale();
+    IDimension size = gfx.viewSize;
     int width = scale.scaledCeil(size.width()), height = scale.scaledCeil(size.height());
 
     // read the framebuffer into our byte array
-    ByteBuffer buf = plat.graphics().gl.bufs.createByteBuffer(width*height*4);
-    plat.graphics().gl.glReadPixels(0, 0, width, height, GL20.GL_BGRA, GL20.GL_UNSIGNED_BYTE, buf);
+    ByteBuffer buf = gfx.gl.bufs.createByteBuffer(width*height*4);
+    gfx.gl.glReadPixels(0, 0, width, height, GL20.GL_BGRA, GL20.GL_UNSIGNED_BYTE, buf);
 
     // finally save the screenshot
     saveScreenshot(width, height, buf);
@@ -61,9 +62,7 @@ public class YourGameJava {
     // ...
     new YourGame(plat) {
       @Override protected void saveScreenshot (int width, int height, ByteBuffer buffer) {
-
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
         DataBufferInt dbuf = (DataBufferInt)image.getRaster().getDataBuffer();
         buffer.asIntBuffer().get(dbuf.getData());
 
