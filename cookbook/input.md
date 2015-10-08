@@ -36,3 +36,8 @@ public class YourGame extends SceneGame {
   }
 }
 ```
+
+## Reacting to a click on a `Layer`
+
+This is in the [Scene Graph](scene-graph.html#reacting-to-a-click-on-a-layer) section.
+
