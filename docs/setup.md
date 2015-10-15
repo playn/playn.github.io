@@ -163,18 +163,19 @@ This ensures that that process is working smoothly before attempting to install 
 your device.
 
 Once you have Xcode working properly, running your PlayN game in the iOS simulator and deploying to
-your device is quite simple. Just invoke the following commands in the top-level directory of your
-project.
+your device is quite simple. Just invoke the following commands:
 
 Run in simulator:
 
 ```
+cd playn-samples/hello
 mvn test -Probosim
 ```
 
 Deploy to device (which must be plugged into the computer via the USB port):
 
 ```
+cd playn-samples/hello
 mvn install -Probodev
 ```
 
@@ -185,9 +186,10 @@ compilation should be much faster.
 
 ### HTML5 backend
 
-To build and test the HTML5 backend, invoke the following command:
+To build and test the HTML5 backend, invoke the following commands:
 
 ```
+cd playn-samples/hello
 mvn integration-test -Phtml
 ```
 
