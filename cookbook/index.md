@@ -21,5 +21,9 @@ play with the snippets is to check out the [Hello] sample game and then paste th
 `HelloGame.java`. Follow the instructions for [building and running] the demos to get yourself set
 up with a development environment such that you can run the Hello demo.
 
+If you don't find what you're looking for, ask on our [mailing list] and someone can likely help,
+and hopefully create a new cookbook recipe in the process.
+
 [Hello]: http://github.com/playn/playn-samples/tree/master/hello
 [building and running]: /docs/setup.html
+[mailing list]: http://groups.google.com/group/playn

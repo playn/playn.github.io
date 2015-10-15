@@ -34,6 +34,11 @@ useful things with the library.
 * [Cute] - draws an environment and a character walking around therein
 * [Showcase] - shows a bunch of different things
 
+## Cookbook
+
+The [Cookbook](/cookbook/) contains simple "recipes" for doing particular things with PlayN. If
+there's something specific you want to do, check there for a code sample that does what you need.
+
 [Cute]: http://github.com/playn/playn-samples/tree/master/cute
 [Hello]: http://github.com/playn/playn-samples/tree/master/hello
 [Physics]: http://github.com/playn/playn-samples/tree/master/physics
