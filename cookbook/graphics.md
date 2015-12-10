@@ -98,18 +98,18 @@ TextLayout layout = gfx.layoutText("Hello PlayN World", format);
 // ...
 ```
 
-Now on to the instructions for configuring the custom fonts in each backend. First you need to
-obtain your font in `.ttf` or `.otf` format. Place your fonts into the `assets` module in your
-game, something like so:
+You also need to obtain your font in `.ttf` or `.otf` format. Place your fonts into the `assets`
+module in your game, something like so:
 
 ```
 assets/src/main/resources/assets/fonts/myfont.ttf
 ```
 
+Now on to the instructions for configuring the custom fonts in each backend.
+
 ### Java backend
 
-In the Java backend, you write code in your bootstrap class to register the fonts with
-`LWJGLPlatform`:
+In the Java backend, you write code in your bootstrap class to register fonts with `LWJGLPlatform`:
 
 ```java
 public class MyGameJava {
@@ -157,7 +157,7 @@ will fall back to the default system font on iOS which is not what you want.
 
 Also, note that on iOS all custom fonts are only available via the `PLAIN` font style. You can use
 `RoboFont.registerVariant` if you want to map bold or italic variants to a single name plus `BOLD`
-or `ITALIC` styles. Again see the notes below on font styles.
+or `ITALIC` styles, but you probably should not do that. Again see the notes below on font styles.
 
 ### HTML backend
 
@@ -187,6 +187,10 @@ file:
 </html>
 ```
 
+In HTML you can also put `font-weight` and `font-style` into the `@font-face` directive if you want
+to denote that a particular font is `BOLD` or `ITALIC`, but again, you probably shouldn't. See the
+final section on the recommended way to handle bold and italic typeface variations.
+
 Note that we not only register the font via a `@font-face` CSS directive, but we place a `<span>`
 element inside the `<div id="playn-root">` because this causes the browser to start loading the
 font immediately when the page is loaded. If you do not do this, the browser will not start loading
@@ -199,12 +203,12 @@ finished loading.
 In the old days before "proper typography" came to computers, it was common for computers to use a
 single "font" (rendering of a typeface into shapes) for both plain, bold and italic, where the bold
 and italic variants were generated algorithmically. This of course was anathema to anyone who
-actually cared about fonts, and when the revolution came, this system was lined up against the wall
-and shot.
+actually cared about fonts, and when the revolution came, this approach was lined up against the
+wall and shot.
 
-Now, civilized right thinking people use separate "fonts" for each variant of a given typeface that
-they will be using. So you'd have "Helvetica.ttf" for Helvetica plain, and "Helvetica-Bold.ttf" for
-Helvetica bold, and so forth.
+Now, civilized, right thinking people use separate "fonts" for each variant of a given typeface
+that they will be using. So you'd have "Helvetica.ttf" for Helvetica Plain, and
+"Helvetica-Bold.ttf" for Helvetica Bold, and so forth.
 
 Java hails from the pre-revolutionary days and thus still offers support for algorithmically
 created font variations. So you can load Helvetica.ttf and ask Java to turn that into a bold
@@ -218,9 +222,10 @@ That said, this is not possible with certain built in fonts. The only fonts you 
 on existing on all platforms are "Helvetica", "Times New Roman" and "Courier" (maybe "Arial" but I
 haven't tested that). If you want to use those typefaces instead of loading your own custom
 typefaces, then you can only access the bold and italic variants by using the `Font.Style` enums.
+
 PlayN does some extra work under the hood to make sure that when you use `new Font("Helvetica",
 Font.Style.BOLD, 24f)` the *real* bold variant of Helvetica is used on platforms that provide it
-(Android and iOS), and Java (on the desktop) does whatever Java does, probably something horrible.
+(Android, iOS and HTML), while (desktop) Java does whatever Java does, probably something horrible.
 So the only time you really want to be using the `Font.Style` stuff is if you're using built-in
 fonts. Otherwise load everything as `Font.Style.PLAIN` and ignore styles. There's even a
 constructor font `Font` that ignores style, so just use `new Font("My Font", 24f)` and bask in the
