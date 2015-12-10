@@ -228,5 +228,5 @@ Font.Style.BOLD, 24f)` the *real* bold variant of Helvetica is used on platforms
 (Android, iOS and HTML), while (desktop) Java does whatever Java does, probably something horrible.
 So the only time you really want to be using the `Font.Style` stuff is if you're using built-in
 fonts. Otherwise load everything as `Font.Style.PLAIN` and ignore styles. There's even a
-constructor font `Font` that ignores style, so just use `new Font("My Font", 24f)` and bask in the
+constructor for `Font` that ignores style. Just use `new Font("My Font Bold", 24f)` and bask in the
 glory of proper line weights and glyph shapes for each variant of your custom typefaces.
