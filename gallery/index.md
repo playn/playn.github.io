@@ -176,8 +176,14 @@ Here are many fine games made using PlayN. Click any image for more details.
   </a></li>
 
   <li><a href="bonewars">
-    <img src="bonewars/thumb.jpg">
+    <img src="bonewars/thumb.png">
     <span class="thumb-text"><span>The Bone Wars</span></span>
+  </a></li>  
+
+
+  <li><a href="collaborationstation">
+    <img src="collaborationstation/thumb.png">
+    <span class="thumb-text"><span>Collaboration Station</span></span>
   </a></li>  
 </ul>
 
