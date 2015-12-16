@@ -174,6 +174,11 @@ Here are many fine games made using PlayN. Click any image for more details.
     <img src="brainteaser/thumb.jpg">
     <span class="thumb-text"><span>Brain Teaser</span></span>
   </a></li>
+
+  <li><a href="bonewars">
+    <img src="bonewars/thumb.jpg">
+    <span class="thumb-text"><span>The Bone Wars</span></span>
+  </a></li>  
 </ul>
 
 If you want to add your game to the gallery, fork the [PlayN website repository], add a directory
