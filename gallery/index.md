@@ -80,6 +80,11 @@ Here are many fine games made using PlayN. Click any image for more details.
     <span class="thumb-text"><span>Super Monkey Ball Bounce</span></span>
   </a></li>
 
+  <li><a href="pokeros">
+    <img src="pokeros/thumb.jpg">
+    <span class="thumb-text"><span>Pokeros</span></span>
+  </a></li>
+
   <li><a href="darkattack">
     <img src="darkattack/thumb.jpg">
     <span class="thumb-text"><span>DarkAttack</span></span>
