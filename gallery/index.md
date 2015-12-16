@@ -55,11 +55,6 @@ span.thumb-text span {
 Here are many fine games made using PlayN. Click any image for more details.
 
 <ul class="thumbs">
-  <li><a href="spellwood">
-    <img src="spellwood/thumb.jpg">
-    <span class="thumb-text"><span>Spellwood</span></span>
-  </a></li>
-
   <li><a href="pyramid-solitaire">
     <img src="pyramid-solitaire/thumb.jpg">
     <span class="thumb-text"><span>Pyramid Solitaire</span></span>
@@ -70,14 +65,19 @@ Here are many fine games made using PlayN. Click any image for more details.
     <span class="thumb-text"><span>Tupsu</span></span>
   </a></li>
 
-  <li><a href="smbbounce">
-    <img src="smbbounce/thumb.jpg">
-    <span class="thumb-text"><span>Super Monkey Ball Bounce</span></span>
+  <li><a href="spellwood">
+    <img src="spellwood/thumb.jpg">
+    <span class="thumb-text"><span>Spellwood</span></span>
   </a></li>
 
   <li><a href="everything">
     <img src="everything/thumb.jpg">
     <span class="thumb-text"><span>The Everything Game</span></span>
+  </a></li>
+
+  <li><a href="smbbounce">
+    <img src="smbbounce/thumb.jpg">
+    <span class="thumb-text"><span>Super Monkey Ball Bounce</span></span>
   </a></li>
 
   <li><a href="darkattack">
