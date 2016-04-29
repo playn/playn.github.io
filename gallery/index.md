@@ -184,6 +184,11 @@ Here are many fine games made using PlayN. Click any image for more details.
     <img src="collaborationstation/thumb.jpg">
     <span class="thumb-text"><span>Collaboration Station</span></span>
   </a></li>
+
+  <li><a href="tnmt">
+    <img src="tnmt/thumb.jpg">
+    <span class="thumb-text"><span>Traveler's Notebook: Monster Tales</span></span>
+  </a></li>
 </ul>
 
 If you want to add your game to the gallery, fork the [PlayN website repository], add a directory
