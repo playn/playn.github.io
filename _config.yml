@@ -4,7 +4,7 @@ description: PlayN is a cross-platform game development library for Java.
 
 # Build settings
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 
 exclude: ["README.md"]
 
