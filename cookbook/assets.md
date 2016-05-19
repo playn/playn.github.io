@@ -18,6 +18,7 @@ import android.content.res.AssetFileDescriptor;
 import com.android.vending.expansion.zipfile.APKExpansionSupport;
 import com.android.vending.expansion.zipfile.ZipResourceFile;
 import playn.android.AndroidAssets;
+import playn.android.GameActivity;
 
 /**
  * An asset source that loads assets from from APK expansion files. Android supports two expansion
@@ -43,9 +44,9 @@ public class ExpansionAssetSource implements AndroidAssets.AssetSource {
 
   private final ZipResourceFile expansionFile;
 
-  public ExpansionAssetSource (int mainVersion, int patchVersion) throws IOException {
+  public ExpansionAssetSource (GameActivity activity, int mainVersion, int patchVersion) throws IOException {
     expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
-      plat.activity, mainVersion, patchVersion);
+      activity, mainVersion, patchVersion);
     if (expansionFile == null) throw IOException("Missing APK expansion zip files");
   }
 
