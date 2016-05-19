@@ -14,6 +14,7 @@ scan the recipes or use their browser's search functionality to dig deeper.
 * [Sound](sound.html) - `Sound` and fury
 * [Input](input.html) - `Mouse`, `Touch`, `Pointer` and `Keyboard`
 * [Net](net.html) - networking for fun and profit
+* [Assets](assets.html) - assets, media, and other bits
 * [Build](build.html) - Maven, IDEs, and other modern torture devices
 
 Each recipe contains just the code snippet that accomplishes the goal in question. An easy way to
