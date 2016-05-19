@@ -43,7 +43,7 @@ public class ExpansionAssetSource implements AndroidAssets.AssetSource {
 
   private final ZipResourceFile expansionFile;
 
-  public AndroidExpansionAssets (int mainVersion, int patchVersion) throws IOException {
+  public ExpansionAssetSource (int mainVersion, int patchVersion) throws IOException {
     expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
       plat.activity, mainVersion, patchVersion);
     if (expansionFile == null) throw IOException("Missing APK expansion zip files");
