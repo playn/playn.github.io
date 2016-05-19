@@ -14,12 +14,9 @@ expansion files. Here is a loader that uses the Android apk-expansion library:
 ```java
 import java.io.IOException;
 import java.io.InputStream;
-
 import android.content.res.AssetFileDescriptor;
-
 import com.android.vending.expansion.zipfile.APKExpansionSupport;
 import com.android.vending.expansion.zipfile.ZipResourceFile;
-
 import playn.android.AndroidAssets;
 
 /**
