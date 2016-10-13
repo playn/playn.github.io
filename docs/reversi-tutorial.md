@@ -241,6 +241,14 @@ and change `Reversi.java` thusly:
 to contain the piece layers. We position `pgroup` at the same location that we position the board
 view so that coordinates in `bview` and `pgroup` are the same, which will come in handy later.
 
+While we are in `Reversi.java`, we add a reference to the platform graphics:
+
+```java
+  public Graphics graphics() {
+    return plat.graphics();
+  }
+```
+
 Now we can get down to work on drawing some pieces. First we need to create some piece images,
 which we'll do using the [Canvas] API. Change `GameView` like so:
 
