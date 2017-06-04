@@ -9,7 +9,7 @@ functionality it provides. Then you might like to build and run some [demos](#de
 into the [tutorials](#tutorials) and build a game.
 
 * [Overview](overview.html)
-* Javadocs: [core](api/core/),  [scene](api/scene/)
+* Javadocs: [core](api/core/), [scene](api/scene/)  API diffs: [core](api/core/changes.html)
 * [Release notes](release/notes.html)
 * [Source code](http://github.com/playn/playn)
 * Set up your [development environment](setup.html)
