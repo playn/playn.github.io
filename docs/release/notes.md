@@ -4,7 +4,7 @@ layout: docs
 
 # Release notes
 
-* The latest API changes are summarized in a [JDiff report].
+* The latest API changes are summarized in: [core diffs], [scene diffs].
 
 ## PlayN v2.0.1
 * (core) Added device orientation notifications to [Graphics]. See `Graphics.deviceOrient` and
@@ -29,5 +29,6 @@ layout: docs
 [Assets]: http://playn.io/docs/api/core/playn/core/Assets.html
 [Exec]: http://playn.io/docs/api/core/playn/core/Exec.html
 [Graphics]: http://playn.io/docs/api/core/playn/core/Graphics.html
-[JDiff report]: http://docs.playn.googlecode.com/git/javadoc/changes.html
 [Layer]: http://playn.io/docs/api/scene/playn/scene/Layer.html
+[core diffs]: ../api/core/changes.html
+[scene diffs]: ../api/scene/changes.html
