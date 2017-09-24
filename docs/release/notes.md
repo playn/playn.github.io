@@ -6,6 +6,16 @@ layout: docs
 
 * The latest API changes are summarized in a [JDiff report].
 
+## PlayN v2.0.1
+* (core) Added device orientation notifications to [Graphics]. See `Graphics.deviceOrient` and
+  `Graphics.orientationDetail`.
+* (core) Added [Exec] `isMainThread`.
+* (core) Fixed bug where textures were released on the non-GL thread (causing crashes).
+* (scene) Added debug outline rendering for scene graph. See [Layer] `DEBUG_RECTS`.
+* (scene) Added [Layer] `visit` and `debugPrint`.
+* (robovm) Added `roboipa` profile to archetype project. Makes it easier to build IPAs.
+* (java) Fixed bug in [Assets] `readBytes`: buffer was not being flipped.
+
 ## PlayN v2.0
 
 * Everything has changed! Well, not everything, but a lot of stuff.
@@ -16,4 +26,8 @@ layout: docs
 
 * The [1.x release notes](notes-1.x.html) are archived on a separate page
 
+[Assets]: http://playn.io/docs/api/core/playn/core/Assets.html
+[Exec]: http://playn.io/docs/api/core/playn/core/Exec.html
+[Graphics]: http://playn.io/docs/api/core/playn/core/Graphics.html
 [JDiff report]: http://docs.playn.googlecode.com/git/javadoc/changes.html
+[Layer]: http://playn.io/docs/api/scene/playn/scene/Layer.html
