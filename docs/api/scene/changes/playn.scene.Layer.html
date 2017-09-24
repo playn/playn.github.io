@@ -7,7 +7,7 @@
 <meta name="description" content="JDiff is a Javadoc doclet which generates an HTML report of all the packages, classes, constructors, methods, and fields which have been removed, added or changed in any way, including their documentation, when two APIs are compared.">
 <meta name="keywords" content="diff, jdiff, javadiff, java diff, java difference, API difference, difference between two APIs, API diff, Javadoc, doclet">
 <TITLE>
-playn.core.Pattern
+playn.scene.Layer
 </TITLE>
 <LINK REL="stylesheet" TYPE="text/css" HREF="../stylesheet-jdiff.css" TITLE="Style">
 </HEAD>
@@ -18,9 +18,9 @@ playn.core.Pattern
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Pattern.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/scene/Layer.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-scene 2.0.1</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.core.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.scene.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="jdiff_help.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
     </TR>
@@ -30,11 +30,11 @@ playn.core.Pattern
 </TR>
 <TR>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="playn.core.Net.Response.html"><B>PREV CLASS</B></A>
-&nbsp;<A HREF="playn.core.Platform.html"><B>NEXT CLASS</B></A>
+&nbsp;<B>PREV CLASS</B>&nbsp;
+&nbsp;<B>NEXT CLASS</B>&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <A HREF="../changes.html" TARGET="_top"><B>FRAMES</B></A>  &nbsp;
-  &nbsp;<A HREF="playn.core.Pattern.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
+  &nbsp;<A HREF="playn.scene.Layer.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell3"><FONT SIZE="-2"> DETAIL: &nbsp;
 CONSTRUCTORS&nbsp;|&nbsp;
 <a href="#methods">METHODS</a>&nbsp;|&nbsp;
@@ -45,30 +45,29 @@ CONSTRUCTORS&nbsp;|&nbsp;
 <HR>
 <!-- End of nav bar -->
 <H2>
-Class playn.core.<A HREF="../playn/core/Pattern.html" target="_top"><tt>Pattern</tt></A>
+Class playn.scene.<A HREF="../playn/scene/Layer.html" target="_top"><tt>Layer</tt></A>
 </H2>
-<p><font size="+1">Changed from an interface to a class.</font>
 <a NAME="constructors"></a>
 <a NAME="methods"></a>
 <p>
-<a NAME="Removed"></a>
-<TABLE summary="Removed Methods" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<a NAME="Added"></a>
+<TABLE summary="Added Methods" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Removed Methods</B></FONT></TD>
+  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Added Methods</B></FONT></TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Pattern.repeatX_removed()"></A>
-  <nobr><code>boolean</code>&nbsp;repeatX()</nobr>
+  <A NAME="playn.scene.Layer.debugPrint_added(playn.core.Log)"></A>
+  <nobr><code>void</code>&nbsp;<A HREF="../playn/scene/Layer.html#debugPrint(playn.core.Log)" target="_top"><tt>debugPrint</tt></A>(<code>Log</code>)</nobr>
   </TD>
-  <TD VALIGN="TOP">Whether this pattern repeats in the x-direction.</TD>
+  <TD VALIGN="TOP">Prints a debug representation of this layer and its children.</TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Pattern.repeatY_removed()"></A>
-  <nobr><code>boolean</code>&nbsp;repeatY()</nobr>
+  <A NAME="playn.scene.Layer.visit_added(playn.scene.Layer.Visitor)"></A>
+  <nobr><code>void</code>&nbsp;<A HREF="../playn/scene/Layer.html#visit(playn.scene.Layer.Visitor)" target="_top"><tt>visit</tt></A>(<code>Visitor</code>)</nobr>
   </TD>
-  <TD VALIGN="TOP">Whether this pattern repeats in the y-direction.</TD>
+  <TD VALIGN="TOP">Visits this layer and its children, in depth first order, with {@code visitor}.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -81,17 +80,10 @@ Class playn.core.<A HREF="../playn/core/Pattern.html" target="_top"><tt>Pattern<
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Pattern.repeatX"></A>
-  <nobr><code>boolean</code>&nbsp;<A HREF="../playn/core/Pattern.html#repeatX" target="_top"><tt>repeatX</tt></A></nobr>
+  <A NAME="playn.scene.Layer.DEBUG_RECTS"></A>
+  <nobr><code>boolean</code>&nbsp;<A HREF="../playn/scene/Layer.html#DEBUG_RECTS" target="_top"><tt>DEBUG_RECTS</tt></A></nobr>
   </TD>
-  <TD VALIGN="TOP">Whether this pattern repeats in the x-direction.</TD>
-</TR>
-<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
-  <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Pattern.repeatY"></A>
-  <nobr><code>boolean</code>&nbsp;<A HREF="../playn/core/Pattern.html#repeatY" target="_top"><tt>repeatY</tt></A></nobr>
-  </TD>
-  <TD VALIGN="TOP">Whether this pattern repeats in the y-direction.</TD>
+  <TD VALIGN="TOP">Controls rendering of debug rectangles around views.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -102,9 +94,9 @@ Class playn.core.<A HREF="../playn/core/Pattern.html" target="_top"><tt>Pattern<
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Pattern.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/scene/Layer.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-scene 2.0.1</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.core.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.scene.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="jdiff_help.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
     </TR>
@@ -114,11 +106,11 @@ Class playn.core.<A HREF="../playn/core/Pattern.html" target="_top"><tt>Pattern<
 </TR>
 <TR>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="playn.core.Net.Response.html"><B>PREV CLASS</B></A>
-&nbsp;<A HREF="playn.core.Platform.html"><B>NEXT CLASS</B></A>
+&nbsp;<B>PREV CLASS</B>&nbsp;
+&nbsp;<B>NEXT CLASS</B>&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <A HREF="../changes.html" TARGET="_top"><B>FRAMES</B></A>  &nbsp;
-  &nbsp;<A HREF="playn.core.Pattern.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
+  &nbsp;<A HREF="playn.scene.Layer.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
 <TD BGCOLOR="0xFFFFFF" CLASS="NavBarCell3"></TD>
 </TR>
 </TABLE>

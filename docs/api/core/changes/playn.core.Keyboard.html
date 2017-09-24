@@ -18,7 +18,7 @@ playn.core.Keyboard
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Keyboard.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Keyboard.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.1</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.core.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
@@ -30,15 +30,15 @@ playn.core.Keyboard
 </TR>
 <TR>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="playn.core.Json.Object.html"><B>PREV CLASS</B></A>
-&nbsp;<A HREF="playn.core.Keyboard.Event.html"><B>NEXT CLASS</B></A>
+&nbsp;<A HREF="playn.core.Graphics.html"><B>PREV CLASS</B></A>
+&nbsp;<B>NEXT CLASS</B>&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <A HREF="../changes.html" TARGET="_top"><B>FRAMES</B></A>  &nbsp;
   &nbsp;<A HREF="playn.core.Keyboard.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell3"><FONT SIZE="-2"> DETAIL: &nbsp;
-<a href="#constructors">CONSTRUCTORS</a>&nbsp;|&nbsp;
+CONSTRUCTORS&nbsp;|&nbsp;
 <a href="#methods">METHODS</a>&nbsp;|&nbsp;
-FIELDS
+<a href="#fields">FIELDS</a>
   </FONT></TD>
 </TR>
 </TABLE>
@@ -47,61 +47,46 @@ FIELDS
 <H2>
 Class playn.core.<A HREF="../playn/core/Keyboard.html" target="_top"><tt>Keyboard</tt></A>
 </H2>
-<p><font size="+1">Changed from an interface to a class.</font>
 <a NAME="constructors"></a>
-<p>
-<a NAME="Added"></a>
-<TABLE summary="Added Constructors" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Added Constructors</B></FONT></TD>
-</TR>
-<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
-  <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Keyboard.ctor_added()"></A>
-  <nobr><A HREF="../playn/core/Keyboard.html#Keyboard()" target="_top"><tt>Keyboard</tt></A>()</nobr>
-  </TD>
-  <TD>&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
 <a NAME="methods"></a>
 <p>
-<a NAME="Removed"></a>
-<TABLE summary="Removed Methods" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<a NAME="Added"></a>
+<TABLE summary="Added Methods" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
 <TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Removed Methods</B></FONT></TD>
+  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Added Methods</B></FONT></TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Keyboard.getText_removed(playn.core.Keyboard.TextType, java.lang.String, java.lang.String, playn.core.util.Callback<java.lang.String>)"></A>
-  <nobr><code>void</code>&nbsp;getText(<code>TextType,</nobr> String<nobr>,</nobr> String<nobr>,</nobr> Callback&lt;String&gt;<nobr><nobr></code>)</nobr>
+  <A NAME="playn.core.Keyboard.isKey_added(playn.core.Key)"></A>
+  <nobr>(<code>Function&lt;Event, KeyEvent&gt;</code>)&nbsp;<A HREF="../playn/core/Keyboard.html#isKey(playn.core.Key)" target="_top"><tt>isKey</tt></A>(<code>Key</code>)</nobr>
   </TD>
-  <TD VALIGN="TOP">Requests a line of text from the user.</TD>
-</TR>
-<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
-  <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Keyboard.hasHardwareKeyboard_removed()"></A>
-  <nobr><code>boolean</code>&nbsp;hasHardwareKeyboard()</nobr>
-  </TD>
-  <TD VALIGN="TOP">Returns true if this device has a hardware keyboard, false if not.</TD>
-</TR>
-<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
-  <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Keyboard.listener_removed()"></A>
-  <nobr><code>Listener</code>&nbsp;listener()</nobr>
-  </TD>
-  <TD VALIGN="TOP">Returns the currently configured global keyboard listener, or null.</TD>
-</TR>
-<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
-  <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="playn.core.Keyboard.setListener_removed(playn.core.Keyboard.Listener)"></A>
-  <nobr><code>void</code>&nbsp;setListener(<code>Listener</code>)</nobr>
-  </TD>
-  <TD VALIGN="TOP">Sets the listener that will receive keyboard events.</TD>
+  <TD VALIGN="TOP">Returns a collector function for key events for {@code key}.</TD>
 </TR>
 </TABLE>
 &nbsp;
 <a NAME="fields"></a>
+<p>
+<a NAME="Added"></a>
+<TABLE summary="Added Fields" BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+  <TD VALIGN="TOP" COLSPAN=2><FONT SIZE="+1"><B>Added Fields</B></FONT></TD>
+</TR>
+<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
+  <TD VALIGN="TOP" WIDTH="25%">
+  <A NAME="playn.core.Keyboard.isKeyEvent"></A>
+  <nobr>(<code>Function&lt;Event, KeyEvent&gt;</code>)&nbsp;<A HREF="../playn/core/Keyboard.html#isKeyEvent" target="_top"><tt>isKeyEvent</tt></A></nobr>
+  </TD>
+  <TD VALIGN="TOP">A function which collects only {@code KeyEvent} events.</TD>
+</TR>
+<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
+  <TD VALIGN="TOP" WIDTH="25%">
+  <A NAME="playn.core.Keyboard.isTypedEvent"></A>
+  <nobr>(<code>Function&lt;Event, KeyEvent&gt;</code>)&nbsp;<A HREF="../playn/core/Keyboard.html#isTypedEvent" target="_top"><tt>isTypedEvent</tt></A></nobr>
+  </TD>
+  <TD VALIGN="TOP">A function which collects only {@code KeyEvent} events.</TD>
+</TR>
+</TABLE>
+&nbsp;
 <HR>
 <!-- Start of nav bar -->
 <TABLE summary="Navigation bar" BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0">
@@ -109,7 +94,7 @@ Class playn.core.<A HREF="../playn/core/Keyboard.html" target="_top"><tt>Keyboar
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Keyboard.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/Keyboard.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.1</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="pkg_playn.core.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
@@ -121,8 +106,8 @@ Class playn.core.<A HREF="../playn/core/Keyboard.html" target="_top"><tt>Keyboar
 </TR>
 <TR>
   <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="playn.core.Json.Object.html"><B>PREV CLASS</B></A>
-&nbsp;<A HREF="playn.core.Keyboard.Event.html"><B>NEXT CLASS</B></A>
+&nbsp;<A HREF="playn.core.Graphics.html"><B>PREV CLASS</B></A>
+&nbsp;<B>NEXT CLASS</B>&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <A HREF="../changes.html" TARGET="_top"><B>FRAMES</B></A>  &nbsp;
   &nbsp;<A HREF="playn.core.Keyboard.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
