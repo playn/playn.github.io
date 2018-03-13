@@ -6,6 +6,19 @@ layout: docs
 
 * The latest API changes are summarized in: [core diffs], [scene diffs].
 
+## PlayN v2.0.2
+* (core) Added [Net.Response] `payloadImage`. Note: this is not available on the HTML backend.
+* (core) Added "collector" functions for all event types to [Mouse] and [Keyboard]. See
+  `keyEvents` for example.
+* (core) [Image] `isLoaded` now only returns true if the image was successfully loaded (not if it
+  failed). This is more likely to be what the caller wants.
+* (core) Added [Canvas] `drawArc`.
+* (core) Fixed issue where `keyboardEnabled`, `mouseEnabled` and `touchEnabled` were not actually
+  being honored.
+* (core) Added `createPath` and `createGradient` (back) to [Graphics]. They're also available on
+  [Canvas], but sometimes you want to create them without having a `Canvas` instance around.
+* (java) Fixed some issues with `Clip` handling different audio formats.
+
 ## PlayN v2.0.1
 * (core) Added device orientation notifications to [Graphics]. See `Graphics.deviceOrient` and
   `Graphics.orientationDetail`.
@@ -27,8 +40,13 @@ layout: docs
 * The [1.x release notes](notes-1.x.html) are archived on a separate page
 
 [Assets]: http://playn.io/docs/api/core/playn/core/Assets.html
+[Canvas]: http://playn.io/docs/api/core/playn/core/Canvas.html
 [Exec]: http://playn.io/docs/api/core/playn/core/Exec.html
 [Graphics]: http://playn.io/docs/api/core/playn/core/Graphics.html
+[Image]: http://playn.io/docs/api/core/playn/core/Image.html
+[Keyboard]: http://playn.io/docs/api/core/playn/core/Keyboard.html
 [Layer]: http://playn.io/docs/api/scene/playn/scene/Layer.html
+[Mouse]: http://playn.io/docs/api/core/playn/core/Mouse.html
+[Net.Response]: http://playn.io/docs/api/core/playn/core/Net.Response.html
 [core diffs]: ../api/core/changes.html
 [scene diffs]: ../api/scene/changes.html
