@@ -6,6 +6,19 @@ layout: docs
 
 * The latest API changes are summarized in: [core diffs], [scene diffs].
 
+## PlayN v2.0.4
+* (core) Ensure that Java 8 compatible bytecode is generated when building with Java 9+.
+* (core) Added [Image] `close` method for explicitly freeing GPU resources (texture) associated
+  with `Image`.
+* (android) Stop clearing out cache directory in `Activity.onDestroy`. We no longer use the cache
+  directory and the app might be using it for its own purposes.
+* (android) Fixed issues with `GL20` and `Canvas.save` methods which were removed in later Android
+  SDK versions.
+* (java) Fixed issue with LWJGL and Java 9+.
+
+## PlayN v2.0.3
+* (java) Updated LWJGL dependency to 3.1.6.
+
 ## PlayN v2.0.2
 * (core) Added [Net.Response] `payloadImage`. Note: this is not available on the HTML backend.
 * (core) Added "collector" functions for all event types to [Mouse] and [Keyboard]. See
