@@ -6,6 +6,32 @@ layout: docs
 
 * The latest API changes are summarized in: [core diffs], [scene diffs].
 
+## PlayN v2.0.5
+* (core) Fixed problems when clipping rectangle had negative dimensions.
+* (core) Added `Scale.roundToNearestPixel` for aligning things to pixel grid on scaled displays.
+* (core) `Assets` now looks for higher resolution resource to scale down before looking for a
+  lower resolution resource to scale up.
+* (core) Added `Input.focus` signal which is emitted when app gains and loses focus. Note that on
+  desktop, HTML and other platforms that support window focus, this is different from the enter app
+  being paused and resumed.
+* (core) `Input.getText` now allows you to pass in the text to use for the `Ok` and `Cancel`
+  buttons.
+* (core) Added `Exec.invokeNextFrame` which allows an action to be queued up that will run on the
+  next frame tick (and _only_ the next frame tick). This also documents that `Exec.invokeLater` can
+  possibly run your action on an OS UI thread when the app is paused and the frame tick is not
+  running.
+* (scene) `ImageLayer` now references new texture before releasing old one. This avoids freeing and
+  recreating the same texture in certain edge cases.
+* (scene) When the game loses focus, any in progress UI interactions are canceled. This avoids
+  problems like a mouse pointer being pressed, then the app loses focus and never hears the release
+  event.
+* (robovm) Updated RoboVM dependency to 2.3.5.
+* (android) Use faster method to commit data saved via `Storage`.
+* (android) Bitmaps are no longer loaded as ARGB_4444 on low memory devices. All devices use
+  ARBG_8888. Android deprecated support for ARGB_4444.
+* (android) The soft keyboard is automatically shown as soon as `Input.getText` dialogs are popped
+  up. Previously the user had to tap in the text entry field to show the keyboard.
+
 ## PlayN v2.0.4
 * (core) Ensure that Java 8 compatible bytecode is generated when building with Java 9+.
 * (core) Added [Image] `close` method for explicitly freeing GPU resources (texture) associated
