@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 GROUP=io/playn
 VERSION=$1
