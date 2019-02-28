@@ -18,7 +18,7 @@ playn.core
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/package-summary.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.2</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/package-summary.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.3</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Package</B></FONT>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1"> &nbsp;<FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
@@ -55,38 +55,46 @@ Package <A HREF="../playn/core/package-summary.html" target="_top"><tt>playn.cor
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="Canvas"></A>
-  <nobr><A HREF="playn.core.Canvas.html">Canvas</A></nobr>
+  <A NAME="Exec"></A>
+  <nobr><A HREF="playn.core.Exec.html">Exec</A></nobr>
   </TD>
-  <TD VALIGN="TOP">A 2D drawing canvas.</TD>
+  <TD VALIGN="TOP">Handles execution of units of code, both on background threads (<A HREF="../playn/core/Exec/.html#invokeAsync"><TT>.invokeAsync</TT></A>) and on the
+ main PlayN game thread (<A HREF="../playn/core/Exec/.html#invokeLater"><TT>.invokeLater</TT></A>).</TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="Graphics"></A>
-  <nobr><A HREF="playn.core.Graphics.html">Graphics</A></nobr>
+  <A NAME="Exec.Default"></A>
+  <nobr><A HREF="playn.core.Exec.Default.html">Exec.Default</A></nobr>
   </TD>
-  <TD VALIGN="TOP">Provides access to graphics information and services.</TD>
+  <TD VALIGN="TOP">A default exec implementation which processes <A HREF="../playn/core/Exec/Default/.html#invokeLater"><TT>.invokeLater</TT></A> via the frame tick.</TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="Keyboard"></A>
-  <nobr><A HREF="playn.core.Keyboard.html">Keyboard</A></nobr>
+  <A NAME="GL20"></A>
+  <nobr><A HREF="playn.core.GL20.html">GL20</A></nobr>
   </TD>
-  <TD VALIGN="TOP">Defines and dispatches keyboard events.</TD>
+  <TD VALIGN="TOP">Interface and values for OpenGL ES 2.0, based on the official JOGL GL2ES2 interface.</TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="Mouse"></A>
-  <nobr><A HREF="playn.core.Mouse.html">Mouse</A></nobr>
+  <A NAME="Image"></A>
+  <nobr><A HREF="playn.core.Image.html">Image</A></nobr>
   </TD>
-  <TD VALIGN="TOP">Defines and dispatches mouse events.</TD>
+  <TD VALIGN="TOP">Bitmapped image data.</TD>
 </TR>
 <TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
   <TD VALIGN="TOP" WIDTH="25%">
-  <A NAME="Net.Response"></A>
-  <nobr><A HREF="playn.core.Net.Response.html">Net.Response</A></nobr>
+  <A NAME="Input"></A>
+  <nobr><A HREF="playn.core.Input.html">Input</A></nobr>
   </TD>
-  <TD VALIGN="TOP">Communicates an HTTP response to the caller.</TD>
+  <TD VALIGN="TOP">Provides information about user input: mouse, touch, and keyboard.</TD>
+</TR>
+<TR BGCOLOR="#FFFFFF" CLASS="TableRowColor">
+  <TD VALIGN="TOP" WIDTH="25%">
+  <A NAME="Scale"></A>
+  <nobr><A HREF="playn.core.Scale.html">Scale</A></nobr>
+  </TD>
+  <TD VALIGN="TOP">Encapsulates a scale factor, provides useful utility methods.</TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -97,7 +105,7 @@ Package <A HREF="../playn/core/package-summary.html" target="_top"><tt>playn.cor
     <TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
     <TABLE summary="Navigation bar" BORDER="0" CELLPADDING="0" CELLSPACING="3">
     <TR ALIGN="center" VALIGN="top">
-      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/package-summary.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.2</tt></B></FONT></A>&nbsp;</TD>
+      <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="../playn/core/package-summary.html" target="_top"><FONT CLASS="NavBarFont1"><B><tt>PlayN-core 2.0.3</tt></B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1"> <A HREF="changes-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
       <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Package</B></FONT>&nbsp;</TD>
       <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1"> &nbsp;<FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
