@@ -215,6 +215,6 @@ comprise the game can be served from any web server you like.
 [Git]: http://git-scm.com/
 [Homebrew]: http://brew.sh/
 [Maven]: http://maven.apache.org/
-[RoboVM]: https://robovm.com/
+[RoboVM]: http://robovm.mobidevelop.com/
 [Xcode]: https://developer.apple.com/xcode/
 [iOS Hello World]: https://developer.apple.com/library/ios/samplecode/HelloWorld_iPhone/HelloWorld_iPhone.zip
