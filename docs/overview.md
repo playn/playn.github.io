@@ -560,6 +560,7 @@ running 4.0.3 or later.
 The iOS backend uses [RoboVM] to compile Java bytecode to ARM executables for deployment on iOS.
 RoboVM provides excellent emulation of many of the JRE APIs, which allows one to use many
 third-party Java libraries if they restrict their deployments to Java, Android and iOS.
+As of RoboVM 2.3.6, the minimum supported iOS target is iOS 7.
 
 RoboVM also provides Java-friendly translations of nearly all of the native iOS APIs, which allows
 games to implement iOS-specific functionality (like Game Center integration, camera access, etc.)
@@ -633,7 +634,7 @@ Overflow](http://stackoverflow.com/questions/tagged/playn).
 [RFuture]: http://threerings.github.io/react/apidocs/react/RFuture.html
 [React]: https://github.com/threerings/react
 [RenderTarget]: http://playn.github.io/docs/api/core/playn/core/RenderTarget.html
-[RoboVM]: http://www.robovm.com/
+[RoboVM]: http://robovm.mobidevelop.com/
 [RootLayer]: http://playn.github.io/docs/api/scene/playn/scene/RootLayer.html
 [SceneGame]: http://playn.github.io/docs/api/scene/playn/scene/SceneGame.html
 [Sound]: http://playn.github.io/docs/api/core/playn/core/Sound.html
