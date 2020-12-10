@@ -6,6 +6,15 @@ layout: docs
 
 * The latest API changes are summarized in: [core diffs], [scene diffs].
 
+## PlayN v2.0.6
+Thanks to various external contributors for these patches.
+* (core) Fix rendering issue in `Canvas.fillRoundRect/strokeRoundRect`.
+* (core) Expose ability to create `Canvas` with pixel size and scale.
+* (ios) Close SQLite connection on termination.
+* (ios) Use UIScreen.nativeScale instead of scale where available (iOS 8+).
+* (all) Various changes to fix memory leaks.
+* (ios) Fix NSTimer in `RoboPlatform.willTerminate`.
+
 ## PlayN v2.0.5
 * (core) Fixed problems when clipping rectangle had negative dimensions.
 * (core) Added `Scale.roundToNearestPixel` for aligning things to pixel grid on scaled displays.
