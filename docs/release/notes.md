@@ -6,6 +6,16 @@ layout: docs
 
 * The latest API changes are summarized in: [core diffs], [scene diffs].
 
+## PlayN v2.0.8
+Thanks to various external contributors for these patches.
+* (core) Fixed issue when image regions referred to disposed textures.
+* (core) Fixed issues with scaling factors < 1.
+* (robovm) Fixed missing calls to save/restore state for Canvas.
+* (android) Fixed text rendering for non-integer font sizes.
+
+## PlayN v2.0.7
+* Unusable release due to Maven shenanigans.
+
 ## PlayN v2.0.6
 Thanks to various external contributors for these patches.
 * (core) Fix rendering issue in `Canvas.fillRoundRect/strokeRoundRect`.
