@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"playn.scene"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"playn.scene"}];updateSearchResults();
